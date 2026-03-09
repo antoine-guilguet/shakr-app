@@ -1,4 +1,185 @@
 @layer components {
+  .auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+    background: radial-gradient(circle at top left, rgba(201, 136, 58, 0.2), transparent 55%),
+      radial-gradient(circle at bottom right, rgba(201, 136, 58, 0.12), transparent 55%);
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 520px;
+    background: rgba(8, 6, 4, 0.96);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(201, 136, 58, 0.22);
+    padding: 2.5rem 2.4rem 2.2rem;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(18px);
+  }
+
+  .auth-title {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--shakr-cream);
+    margin-bottom: 0.6rem;
+  }
+
+  .auth-subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .auth-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .auth-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .auth-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+  }
+
+  .auth-input {
+    border-radius: 999px;
+    border: 1px solid rgba(201, 136, 58, 0.4);
+    background: rgba(240, 232, 216, 0.03);
+    padding: 0.8rem 1.3rem;
+    font-family: "DM Mono", monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.07em;
+    color: var(--shakr-cream);
+    outline: none;
+    transition: border-color 0.25s ease, background 0.25s ease, transform 0.1s ease;
+  }
+
+  .auth-input::placeholder {
+    color: var(--shakr-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.58rem;
+  }
+
+  .auth-input:focus {
+    border-color: rgba(201, 136, 58, 0.9);
+    background: rgba(240, 232, 216, 0.07);
+    transform: translateY(-1px);
+  }
+
+  .auth-help {
+    font-size: 0.58rem;
+    color: var(--shakr-text-muted);
+    letter-spacing: 0.06em;
+    margin-top: 0.1rem;
+  }
+
+  .auth-label-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .auth-inline-link {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--shakr-amber);
+    text-decoration: none;
+  }
+
+  .auth-inline-link:hover {
+    text-decoration: underline;
+  }
+
+  .auth-remember {
+    margin-top: 0.2rem;
+  }
+
+  .auth-remember-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.62rem;
+    color: var(--shakr-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .auth-remember-label input[type="checkbox"] {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 0.25rem;
+  }
+
+  .auth-actions {
+    margin-top: 0.3rem;
+  }
+
+  .auth-button {
+    width: 100%;
+    border-radius: 999px;
+    border: none;
+    padding: 0.9rem 1.4rem;
+    font-size: 0.7rem;
+    font-family: "DM Mono", monospace;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--shakr-amber), #f6b96a);
+    color: #140f0a;
+    cursor: pointer;
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.65);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+  }
+
+  .auth-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    filter: brightness(1.02);
+  }
+
+  .auth-button:active {
+    transform: translateY(0);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+  }
+
+  .auth-footer {
+    margin-top: 1.8rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+  }
+
+  .auth-link {
+    color: var(--shakr-amber);
+    text-decoration: none;
+  }
+
+  .auth-link:hover {
+    text-decoration: underline;
+  }
+
   .homepage-hero {
     position: relative;
     min-height: 90vh;

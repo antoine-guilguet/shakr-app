@@ -23,6 +23,49 @@
   </head>
 
   <body>
+    <div class="flash-container">
+      <% flash.each do |type, message| %>
+        <% next if message.blank? %>
+        <div class="flash <%= "flash-#{type}" %>">
+          <span><%= message %></span>
+        </div>
+      <% end %>
+    </div>
+
     <%= yield %>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const flashes = document.querySelectorAll(".flash");
+
+        flashes.forEach((flash, index) => {
+          // Staggered entrance from the right
+          requestAnimationFrame(() => {
+            flash.classList.add("flash--visible");
+          });
+
+          const hideAfterMs = 3000 + index * 150;
+
+          setTimeout(() => {
+            flash.classList.remove("flash--visible");
+
+            const removeFlash = () => flash.remove();
+
+            if (flash instanceof HTMLElement) {
+              const onTransitionEnd = (event) => {
+                if (event.propertyName === "opacity") {
+                  flash.removeEventListener("transitionend", onTransitionEnd);
+                  removeFlash();
+                }
+              };
+
+              flash.addEventListener("transitionend", onTransitionEnd);
+            } else {
+              removeFlash();
+            }
+          }, hideAfterMs);
+        });
+      });
+    </script>
   </body>
 </html>

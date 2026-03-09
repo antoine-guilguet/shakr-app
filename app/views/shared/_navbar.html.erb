@@ -1,4 +1,33 @@
 <nav class="navbar">
-  <div class="navbar-logo">Sha<span>k</span>r</div>
-  <div class="navbar-tagline">AI Cocktail Companion</div>
+  <div class="navbar-left">
+    <div class="navbar-logo">Sha<span>k</span>r</div>
+    <div class="navbar-tagline">AI Cocktail Companion</div>
+  </div>
+
+  <div class="navbar-right">
+    <% if user_signed_in? %>
+      <details class="navbar-user-menu">
+        <summary class="navbar-user-summary">
+          <div class="navbar-avatar">
+            <span>
+              <%= (current_user.first_name.presence || current_user.username.presence || "S").first.upcase %>
+            </span>
+          </div>
+          <span class="navbar-user-name">
+            <%= current_user.first_name.presence || current_user.username.presence || "shaker" %>
+          </span>
+        </summary>
+        <div class="navbar-user-dropdown">
+          <%= link_to "Edit profile", edit_user_registration_path, class: "navbar-dropdown-item" %>
+          <%= link_to "Log out",
+                      destroy_user_session_path,
+                      method: :delete,
+                      data: { turbo_method: :delete },
+                      class: "navbar-dropdown-item navbar-dropdown-item-danger" %>
+        </div>
+      </details>
+    <% else %>
+      <%= link_to "Log in", new_user_session_path, class: "btn-primary" %>
+    <% end %>
+  </div>
 </nav>

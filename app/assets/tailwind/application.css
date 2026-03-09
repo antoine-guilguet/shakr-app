@@ -3,4 +3,5 @@
 @import "./base.css";
 @import "./components/navbar.css";
 @import "./components/button.css";
+@import "./components/flash.css";
 @import "./pages/homepage.css";

@@ -1,0 +1,19 @@
+<%= render "shared/navbar" %>
+
+<section class="homepage-hero">
+  <div class="homepage-hero-line"></div>
+  <div class="homepage-hero-circle"></div>
+
+  <div class="homepage-hero-content">
+    <div class="homepage-hero-eyebrow">Signed in</div>
+    <h1>
+      Welcome back,<br>
+      <em><%= current_user.first_name.presence || current_user.username.presence || "shaker" %></em>.
+    </h1>
+    <p class="homepage-hero-subtitle">
+      This is your private dashboard, used here to test navigation and authentication.
+      Try logging out from the navbar to confirm you are redirected to the homepage.
+    </p>
+  </div>
+</section>
+

@@ -19,12 +19,7 @@
           type="email"
           placeholder="Your email address"
         >
-        <button
-          type="button"
-          class="btn-primary"
-        >
-          Create account
-        </button>
+        <%= link_to "Create account", new_user_registration_path, class: "btn-primary" %>
       </div>
       <p class="homepage-signup-note">Free to start. No credit card required.</p>
     </div>
@@ -68,12 +63,7 @@
       type="email"
       placeholder="Your email address"
     >
-    <button
-      type="button"
-      class="btn-primary"
-    >
-      Get started
-    </button>
+    <%= link_to "Get started", new_user_registration_path, class: "btn-primary" %>
   </div>
 </section>
 

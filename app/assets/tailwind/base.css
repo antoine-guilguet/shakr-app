@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap");
+
+@layer base {
+  :root {
+    --shakr-black: #0d0b09;
+    --shakr-amber: #c9883a;
+    --shakr-amber-light: #e8b46a;
+    --shakr-cream: #f0e8d8;
+    --shakr-cream-dark: #d4c5a9;
+    --shakr-smoke: #1a1714;
+    --shakr-text-muted: #7a6e60;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: var(--shakr-black);
+    color: var(--shakr-cream);
+    font-family: "DM Mono", monospace;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+}
+

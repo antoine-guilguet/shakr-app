@@ -1,0 +1,78 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="120" fill="#0D0B09"/>
+
+  <!-- Amber glow -->
+  <radialGradient id="glow" cx="50%" cy="35%" r="60%">
+    <stop offset="0%" stop-color="#E8B46A" stop-opacity="0.95"/>
+    <stop offset="45%" stop-color="#C9883A" stop-opacity="0.9"/>
+    <stop offset="100%" stop-color="#0D0B09" stop-opacity="0.2"/>
+  </radialGradient>
+  <circle cx="256" cy="240" r="190" fill="url(#glow)"/>
+
+  <!-- Shaker body -->
+  <linearGradient id="shaker-body" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#F0E8D8"/>
+    <stop offset="40%" stop-color="#E8B46A"/>
+    <stop offset="100%" stop-color="#C9883A"/>
+  </linearGradient>
+  <path
+    d="M210 170
+       L302 170
+       L284 360
+       C281 382 271 400 256 400
+       C241 400 231 382 228 360
+       Z"
+    fill="url(#shaker-body)"
+    stroke="#F0E8D8"
+    stroke-width="6"
+    stroke-linejoin="round"
+  />
+
+  <!-- Shaker neck -->
+  <linearGradient id="shaker-neck" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#F0E8D8"/>
+    <stop offset="100%" stop-color="#D4C5A9"/>
+  </linearGradient>
+  <path
+    d="M222 150
+       L290 150
+       L298 170
+       L214 170
+       Z"
+    fill="url(#shaker-neck)"
+    stroke="#F0E8D8"
+    stroke-width="5"
+    stroke-linejoin="round"
+  />
+
+  <!-- Shaker cap -->
+  <path
+    d="M235 128
+       L277 128
+       L272 150
+       L240 150
+       Z"
+    fill="#F0E8D8"
+    stroke="#F0E8D8"
+    stroke-width="4"
+    stroke-linejoin="round"
+  />
+
+  <!-- Amber accent slash (hinting the highlighted "k") -->
+  <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#E8B46A"/>
+    <stop offset="100%" stop-color="#C9883A"/>
+  </linearGradient>
+  <path
+    d="M222 210
+       L288 340"
+    stroke="url(#accent)"
+    stroke-width="10"
+    stroke-linecap="round"
+  />
+
+  <!-- Subtle top sparkle -->
+  <circle cx="248" cy="138" r="6" fill="#FFFFFF" fill-opacity="0.9"/>
+  <circle cx="262" cy="132" r="3" fill="#FFFFFF" fill-opacity="0.7"/>
+</svg>

@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@import "./base.css";
+@import "./components/navbar.css";
+@import "./components/button.css";
+@import "./pages/homepage.css";

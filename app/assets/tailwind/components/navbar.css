@@ -1,0 +1,31 @@
+@layer components {
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .navbar-logo {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--shakr-cream);
+  }
+
+  .navbar-logo span {
+    color: var(--shakr-amber);
+  }
+
+  .navbar-tagline {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+  }
+}
+

@@ -1,0 +1,21 @@
+@layer components {
+  .btn-primary {
+    background: var(--shakr-amber);
+    color: var(--shakr-black);
+    border: none;
+    padding: 1rem 1.6rem;
+    font-family: "DM Mono", monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-primary:hover {
+    background: var(--shakr-amber-light);
+    transform: translateY(-1px);
+  }
+}
+

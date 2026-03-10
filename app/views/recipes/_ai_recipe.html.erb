@@ -1,0 +1,70 @@
+<div class="ai-recipe">
+  <div class="ai-recipe-header">
+    <div class="ai-recipe-pill">AI draft</div>
+    <h2 class="ai-recipe-title"><%= recipe[:name] %></h2>
+
+    <% if recipe[:description].present? %>
+      <p class="ai-recipe-description"><%= recipe[:description] %></p>
+    <% end %>
+
+    <% if recipe[:tags].present? %>
+      <div class="ai-recipe-tags">
+        <% recipe[:tags].each do |tag| %>
+          <span class="ai-recipe-tag"><%= tag %></span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="ai-recipe-body">
+    <div class="ai-recipe-section">
+      <h3 class="ai-recipe-section-title">Ingredients</h3>
+
+      <% if recipe[:ingredients].present? %>
+        <ul class="ai-recipe-ingredients">
+          <% recipe[:ingredients].each do |ingredient| %>
+            <li class="ai-recipe-ingredient">
+              <span class="ai-recipe-ingredient-qty">
+                <%= ingredient[:quantity] %> <%= ingredient[:unit] %>
+              </span>
+              <span class="ai-recipe-ingredient-name"><%= ingredient[:name] %></span>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="ai-recipe-empty">No ingredients were returned by the AI.</p>
+      <% end %>
+    </div>
+
+    <div class="ai-recipe-section">
+      <h3 class="ai-recipe-section-title">Method</h3>
+
+      <% if recipe[:steps].present? %>
+        <ol class="ai-recipe-steps">
+          <% recipe[:steps].each do |step| %>
+            <li><%= step %></li>
+          <% end %>
+        </ol>
+      <% else %>
+        <p class="ai-recipe-empty">No steps were returned by the AI.</p>
+      <% end %>
+
+      <div class="ai-recipe-meta">
+        <% if recipe[:glassware].present? %>
+          <div class="ai-recipe-meta-item">
+            <span class="ai-recipe-meta-label">Glass</span>
+            <span class="ai-recipe-meta-value"><%= recipe[:glassware] %></span>
+          </div>
+        <% end %>
+
+        <% if recipe[:garnish].present? %>
+          <div class="ai-recipe-meta-item">
+            <span class="ai-recipe-meta-label">Garnish</span>
+            <span class="ai-recipe-meta-value"><%= recipe[:garnish] %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

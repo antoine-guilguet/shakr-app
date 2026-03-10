@@ -6,7 +6,10 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  get "dashboard" => "home#dashboard", as: :dashboard
+  get "dashboard" => "recipes#index", as: :dashboard
+
+  resources :recipes, only: [:index, :new]
+  post "ai_recipes" => "ai_recipes#create", as: :ai_recipes
 
   root "home#index"
 end

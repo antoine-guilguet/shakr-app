@@ -23,6 +23,7 @@
   </head>
 
   <body>
+    <%= render "shared/navbar" %>
     <div class="flash-container">
       <% flash.each do |type, message| %>
         <% next if message.blank? %>

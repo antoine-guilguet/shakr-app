@@ -16,6 +16,11 @@ module ShakrApp
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    # Autoload and eager load app/services for things like Ai::RecipeGenerator.
+    services_path = Rails.root.join("app/services")
+    config.autoload_paths << services_path unless config.autoload_paths.include?(services_path)
+    config.eager_load_paths << services_path unless config.eager_load_paths.include?(services_path)
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

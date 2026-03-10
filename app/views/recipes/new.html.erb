@@ -1,0 +1,49 @@
+<section class="dashboard-ai">
+  <div class="dashboard-ai-header">
+    <div class="dashboard-ai-label">Get your imagination flowing.</div>
+    <h2 class="dashboard-ai-title">Describe the cocktail you want to create.</h2>
+    <p class="dashboard-ai-subtitle">
+      What you are in the mood for ? — flavors, spirits, mood, constraints
+    </p>
+  </div>
+
+  <div class="dashboard-ai-grid">
+    <div class="dashboard-ai-form-card">
+      <%= form_with url: ai_recipes_path, scope: :ai_recipe, local: true do |f| %>
+        <div class="dashboard-ai-field">
+          <%= f.text_area :prompt,
+                rows: 5,
+                class: "dashboard-ai-textarea",
+                placeholder: "E.g. a bright, citrusy gin sour with egg white, not too sweet, for an aperitif" %>
+        </div>
+
+        <% if flash[:alert].present? %>
+          <p class="dashboard-ai-error"><%= flash[:alert] %></p>
+        <% end %>
+
+        <div class="dashboard-ai-actions">
+          <%= f.submit "Generate recipe", class: "btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="dashboard-ai-result-card">
+      <% if defined?(@recipe) && @recipe.present? %>
+        <%= render "recipes/ai_recipe", recipe: @recipe.is_a?(Recipe) ? {
+          name: @recipe.name,
+          description: @recipe.description,
+          tags: @recipe.tags || [],
+          ingredients: @recipe.ingredients || [],
+          steps: @recipe.steps || [],
+          glassware: @recipe.glassware,
+          garnish: @recipe.garnish
+        } : @recipe %>
+      <% else %>
+        <div class="dashboard-ai-placeholder">
+          <h3>Nothing in the shaker yet.</h3>
+          <p>Describe a cocktail idea on the left and your AI-generated recipe will appear here.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

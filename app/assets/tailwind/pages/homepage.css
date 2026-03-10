@@ -450,6 +450,277 @@
     color: var(--shakr-text-muted);
     letter-spacing: 0.1em;
   }
+
+  .dashboard-ai {
+    padding: 4rem 4rem 5rem;
+    border-top: 1px solid rgba(201, 136, 58, 0.12);
+  }
+
+  .dashboard-ai-header {
+    max-width: 660px;
+    margin-bottom: 2.5rem;
+  }
+
+  .dashboard-ai-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--shakr-amber);
+    margin-bottom: 0.7rem;
+  }
+
+  .dashboard-ai-title {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--shakr-cream);
+    margin-bottom: 0.7rem;
+  }
+
+  .dashboard-ai-subtitle {
+    font-size: 0.7rem;
+    line-height: 1.9;
+    color: var(--shakr-text-muted);
+    letter-spacing: 0.05em;
+    max-width: 520px;
+  }
+
+  .dashboard-ai-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.15fr);
+    gap: 2.5rem;
+  }
+
+  .dashboard-ai-form-card,
+  .dashboard-ai-result-card {
+    background: rgba(8, 6, 4, 0.96);
+    border-radius: 1.4rem;
+    border: 1px solid rgba(201, 136, 58, 0.22);
+    padding: 2rem 2.2rem 2.1rem;
+    box-shadow: 0 26px 60px rgba(0, 0, 0, 0.65);
+  }
+
+  .dashboard-ai-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .dashboard-ai-label-small {
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+  }
+
+  .dashboard-ai-textarea {
+    width: 100%;
+    min-height: 8rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(201, 136, 58, 0.45);
+    background: rgba(240, 232, 216, 0.04);
+    padding: 1rem 1.1rem;
+    font-family: "DM Mono", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--shakr-cream);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.25s ease, background 0.25s ease, transform 0.1s ease;
+  }
+
+  .dashboard-ai-textarea::placeholder {
+    color: var(--shakr-text-muted);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .dashboard-ai-textarea:focus {
+    border-color: rgba(201, 136, 58, 0.9);
+    background: rgba(240, 232, 216, 0.07);
+    transform: translateY(-1px);
+  }
+
+  .dashboard-ai-help {
+    font-size: 0.6rem;
+    color: var(--shakr-text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .dashboard-ai-error {
+    margin-top: 0.4rem;
+    font-size: 0.6rem;
+    color: #fca5a5;
+    letter-spacing: 0.06em;
+  }
+
+  .dashboard-ai-actions {
+    margin-top: 1.4rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .dashboard-ai-placeholder {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    justify-content: center;
+    height: 100%;
+    color: var(--shakr-text-muted);
+  }
+
+  .dashboard-ai-placeholder h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--shakr-cream);
+  }
+
+  .dashboard-ai-placeholder p {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+  }
+
+  .ai-recipe {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  .ai-recipe-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.28rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(201, 136, 58, 0.6);
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--shakr-amber);
+  }
+
+  .ai-recipe-title {
+    margin-top: 0.8rem;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: var(--shakr-cream);
+  }
+
+  .ai-recipe-description {
+    margin-top: 0.4rem;
+    font-size: 0.72rem;
+    line-height: 1.9;
+    color: var(--shakr-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .ai-recipe-tags {
+    margin-top: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .ai-recipe-tag {
+    padding: 0.22rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid rgba(201, 136, 58, 0.4);
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+  }
+
+  .ai-recipe-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.1fr);
+    gap: 1.8rem;
+  }
+
+  .ai-recipe-section-title {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+    margin-bottom: 0.8rem;
+  }
+
+  .ai-recipe-ingredients {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .ai-recipe-ingredient {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: 0.7rem;
+    color: var(--shakr-cream);
+  }
+
+  .ai-recipe-ingredient-qty {
+    font-family: "DM Mono", monospace;
+    letter-spacing: 0.1em;
+    color: var(--shakr-amber);
+    min-width: 4.2rem;
+  }
+
+  .ai-recipe-ingredient-name {
+    color: var(--shakr-cream);
+  }
+
+  .ai-recipe-steps {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    color: var(--shakr-cream);
+  }
+
+  .ai-recipe-steps li::marker {
+    font-family: "DM Mono", monospace;
+    color: var(--shakr-amber);
+  }
+
+  .ai-recipe-empty {
+    font-size: 0.66rem;
+    color: var(--shakr-text-muted);
+  }
+
+  .ai-recipe-meta {
+    margin-top: 1.1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+  }
+
+  .ai-recipe-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .ai-recipe-meta-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+  }
+
+  .ai-recipe-meta-value {
+    font-size: 0.7rem;
+    color: var(--shakr-cream);
+  }
 }
 
 @keyframes homepage-fade-up {

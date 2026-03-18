@@ -298,6 +298,12 @@
     display: flex;
   }
 
+  .homepage-signup-form .btn-primary {
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+
   .homepage-signup-form input[type="email"],
   .homepage-bottom-form input[type="email"] {
     flex: 1;

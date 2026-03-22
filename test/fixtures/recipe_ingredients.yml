@@ -1,0 +1,13 @@
+one_gin:
+  recipe: one
+  ingredient: gin
+  amount: 2.0
+  unit: oz
+  position: 0
+
+one_lemon:
+  recipe: one
+  ingredient: lemon
+  amount: 0.75
+  unit: oz
+  position: 1

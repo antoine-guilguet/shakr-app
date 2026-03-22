@@ -1,0 +1,32 @@
+<div class="recipe-form-ingredient-row">
+  <%= f.hidden_field :id if f.object.persisted? %>
+  <%= f.hidden_field :_destroy, value: "0" %>
+  <div class="recipe-form-row recipe-form-ingredient-fields">
+    <div class="recipe-form-field recipe-form-field-compact">
+      <%= f.label :ingredient_id, "Ingredient", class: "recipe-form-label" %>
+      <%= f.collection_select :ingredient_id,
+            ingredients_for_select,
+            :id,
+            :name,
+            { include_blank: "—" },
+            { class: "recipe-form-input" } %>
+    </div>
+    <div class="recipe-form-field recipe-form-field-compact">
+      <%= f.label :amount, "Amount", class: "recipe-form-label" %>
+      <%= f.number_field :amount, class: "recipe-form-input", step: "any", min: 0, placeholder: "e.g. 2" %>
+    </div>
+    <div class="recipe-form-field recipe-form-field-compact">
+      <%= f.label :unit, "Unit", class: "recipe-form-label" %>
+      <%= f.select :unit,
+            RecipeIngredient::UNITS.map { |u| [u, u] },
+            { include_blank: "—" },
+            { class: "recipe-form-input" } %>
+    </div>
+    <div class="recipe-form-field recipe-form-field-compact recipe-form-ingredient-remove">
+      <span class="recipe-form-label recipe-form-label-spacer" aria-hidden="true">&nbsp;</span>
+      <button type="button" class="btn-secondary recipe-form-ingredient-remove-btn" data-action="nested-form#remove">
+        Remove
+      </button>
+    </div>
+  </div>
+</div>

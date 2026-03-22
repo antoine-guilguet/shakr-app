@@ -1,0 +1,81 @@
+<% ingredients_for_select = Ingredient.order(:name) %>
+<%= form_with model: recipe, local: true, html: { class: "recipe-form" } do |f| %>
+  <% if recipe.respond_to?(:errors) && recipe.errors.any? %>
+    <div class="recipe-form-errors" role="alert">
+      <p class="recipe-form-errors-title"><%= pluralize(recipe.errors.count, "error") %> prevented saving</p>
+      <ul class="recipe-form-errors-list">
+        <% recipe.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="recipe-form-field">
+    <%= f.label :name, "Recipe name", class: "recipe-form-label" %>
+    <%= f.text_field :name, class: "recipe-form-input", autocomplete: "off" %>
+  </div>
+
+  <div class="recipe-form-field">
+    <%= f.label :description, "Description", class: "recipe-form-label" %>
+    <%= f.text_area :description, rows: 4, class: "recipe-form-textarea" %>
+  </div>
+
+  <div class="recipe-form-row">
+    <div class="recipe-form-field">
+      <%= f.label :glassware, "Glassware", class: "recipe-form-label" %>
+      <%= f.text_field :glassware, class: "recipe-form-input", autocomplete: "off" %>
+    </div>
+    <div class="recipe-form-field">
+      <%= f.label :garnish, "Garnish", class: "recipe-form-label" %>
+      <%= f.text_field :garnish, class: "recipe-form-input", autocomplete: "off" %>
+    </div>
+  </div>
+
+  <div class="recipe-form-field">
+    <%= f.label :tags, "Tags", class: "recipe-form-label" %>
+    <%= f.text_field :tags, value: Array(recipe.tags).join(", "), class: "recipe-form-input", autocomplete: "off", placeholder: "sour, citrus, gin" %>
+  </div>
+
+  <div class="recipe-form-field recipe-form-field-checkbox">
+    <label class="recipe-form-label recipe-form-checkbox-label">
+      <%= f.check_box :is_public, class: "recipe-form-checkbox" %>
+      <span>Public — anyone with the link can view</span>
+    </label>
+  </div>
+
+  <fieldset class="recipe-form-field" data-controller="nested-form">
+    <legend class="recipe-form-label">Ingredients</legend>
+
+    <div data-nested-form-target="container">
+      <%= f.fields_for :recipe_ingredients do |rf| %>
+        <% if rf.object.marked_for_destruction? %>
+          <%= rf.hidden_field :id %>
+          <%= rf.hidden_field :_destroy, value: "1" %>
+        <% else %>
+          <%= render "recipe_ingredient_fields", f: rf, ingredients_for_select: ingredients_for_select %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <template data-nested-form-target="template">
+      <%= f.fields_for :recipe_ingredients, RecipeIngredient.new, child_index: "NEW_RECORD" do |rf| %>
+        <%= render "recipe_ingredient_fields", f: rf, ingredients_for_select: ingredients_for_select %>
+      <% end %>
+    </template>
+
+    <p class="recipe-form-ingredient-actions">
+      <button type="button" class="btn-secondary" data-action="nested-form#add">Add ingredient</button>
+    </p>
+  </fieldset>
+
+  <div class="recipe-form-field">
+    <%= f.label :steps, "Method", class: "recipe-form-label" %>
+    <%= f.text_area :steps, rows: 6, value: Array(recipe.steps).join("\n"), class: "recipe-form-textarea", placeholder: "Add ingredients to a shaker with ice…" %>
+    <p class="recipe-form-help">One step per line.</p>
+  </div>
+
+  <div class="recipe-form-actions">
+    <%= f.submit (recipe.persisted? ? "Save changes" : "Create recipe"), class: "btn-primary" %>
+  </div>
+<% end %>

@@ -1,11 +1,12 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# password123 for both (bcrypt digest generated once for stable fixtures)
+one:
+  email: one@example.com
+  encrypted_password: $2a$12$g/dXqr3PYr/m4OtT5JB8SuT9BXq2.SxkW4B3tUS1aziOX3BZ9D836
+  first_name: One
+  last_name: User
 
-# This model initially had no columns defined. If you add columns to the
-# model remove the "{}" from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-# column: value
+two:
+  email: two@example.com
+  encrypted_password: $2a$12$g/dXqr3PYr/m4OtT5JB8SuT9BXq2.SxkW4B3tUS1aziOX3BZ9D836
+  first_name: Two
+  last_name: User

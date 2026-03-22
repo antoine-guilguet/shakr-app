@@ -2,7 +2,11 @@
   <div class="recipes-new-inner">
     <header class="recipes-new-header">
       <p class="recipes-new-label">Recipe book</p>
-      <h1 class="recipes-new-title">Create a recipe</h1>
+      <h1 class="recipes-new-title">Edit recipe</h1>
+      <p class="recipes-new-subtitle">
+        Update the details below. Ingredients stay one per line as
+        <code class="recipes-new-code">quantity|unit|name</code>; method is one step per line.
+      </p>
     </header>
 
     <div class="recipes-new-card">
@@ -10,7 +14,7 @@
     </div>
 
     <div class="recipes-new-footer">
-      <%= link_to "Back to recipes", recipes_path %>
+      <%= link_to "Back to recipe", @recipe %>
     </div>
   </div>
 </section>

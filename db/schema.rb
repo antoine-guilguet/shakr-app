@@ -10,21 +10,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_09_191909) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_22_170251) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "ingredients", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "kind", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "lower(TRIM(BOTH FROM name))", name: "index_ingredients_on_lower_trim_name", unique: true
+  end
+
+  create_table "recipe_ingredients", force: :cascade do |t|
+    t.bigint "recipe_id", null: false
+    t.bigint "ingredient_id", null: false
+    t.decimal "amount", precision: 12, scale: 4
+    t.string "unit", null: false
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ingredient_id"], name: "index_recipe_ingredients_on_ingredient_id"
+    t.index ["recipe_id", "position"], name: "index_recipe_ingredients_on_recipe_id_and_position", unique: true
+    t.index ["recipe_id"], name: "index_recipe_ingredients_on_recipe_id"
+  end
 
   create_table "recipes", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name"
     t.text "description"
     t.text "tags"
-    t.text "ingredients"
     t.text "steps"
     t.string "glassware"
     t.string "garnish"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "ingredients"
+    t.boolean "is_public", default: false, null: false
+    t.index ["is_public"], name: "index_recipes_on_is_public"
     t.index ["user_id"], name: "index_recipes_on_user_id"
   end
 
@@ -42,5 +65,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_191909) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "recipe_ingredients", "ingredients"
+  add_foreign_key "recipe_ingredients", "recipes"
   add_foreign_key "recipes", "users"
 end

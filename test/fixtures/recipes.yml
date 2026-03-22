@@ -1,21 +1,17 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
   user: one
-  name: MyString
-  description: MyText
-  tags: MyText
-  ingredients: MyText
-  steps: MyText
-  glassware: MyString
-  garnish: MyString
+  name: Fixture Cocktail
+  description: A test recipe
+  tags: <%= ["citrus"].to_json %>
+  steps: <%= ["Shake", "Strain"].to_json %>
+  glassware: Coupe
+  garnish: Lemon twist
 
 two:
   user: two
-  name: MyString
-  description: MyText
-  tags: MyText
-  ingredients: MyText
-  steps: MyText
-  glassware: MyString
-  garnish: MyString
+  name: Second Cocktail
+  description: Another
+  tags: <%= [].to_json %>
+  steps: <%= ["Stir"].to_json %>
+  glassware:
+  garnish:

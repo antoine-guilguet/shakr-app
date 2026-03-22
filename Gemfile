@@ -62,6 +62,9 @@ group :development do
 end
 
 group :test do
+  # Pin for Rails test runner compatibility (minitest 6 changes `run` arity).
+  gem "minitest", "~> 5.25"
+
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"

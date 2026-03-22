@@ -1,5 +1,3 @@
-<%= render "shared/navbar" %>
-
 <section class="homepage-hero">
   <div class="homepage-hero-line"></div>
   <div class="homepage-hero-circle"></div>
@@ -7,7 +5,7 @@
   <div class="homepage-hero-content">
     <div class="homepage-hero-eyebrow">Est. 2026 — Bartender's Intelligence</div>
     <h1>
-      Craft your<br><em>perfect cocktail,</em><br>guided by voice.
+      Voice your way up to the<br><em>perfect cocktail</em>
     </h1>
     <p class="homepage-hero-subtitle">
       An AI companion for bartenders and enthusiasts. Explore new recipes, find cocktails from what's in your bar, and capture every creation — all hands-free.
@@ -15,16 +13,7 @@
 
     <div class="homepage-signup-form">
       <div class="homepage-signup-row">
-        <input
-          type="email"
-          placeholder="Your email address"
-        >
-        <button
-          type="button"
-          class="btn-primary"
-        >
-          Create account
-        </button>
+        <%= link_to "Start Shaking", new_user_registration_path, class: "btn-primary" %>
       </div>
       <p class="homepage-signup-note">Free to start. No credit card required.</p>
     </div>
@@ -64,16 +53,7 @@
   <h2>Ready to shake things up?</h2>
   <p>Join the craft — it only takes a minute</p>
   <div class="homepage-bottom-form">
-    <input
-      type="email"
-      placeholder="Your email address"
-    >
-    <button
-      type="button"
-      class="btn-primary"
-    >
-      Get started
-    </button>
+    <%= link_to "Get started", new_user_registration_path, class: "btn-primary" %>
   </div>
 </section>
 

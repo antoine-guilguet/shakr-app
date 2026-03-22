@@ -1,0 +1,16 @@
+<section class="recipes-new">
+  <div class="recipes-new-inner">
+    <header class="recipes-new-header">
+      <p class="recipes-new-label">Recipe book</p>
+      <h1 class="recipes-new-title">Create a recipe</h1>
+    </header>
+
+    <div class="recipes-new-card">
+      <%= render "form", recipe: @recipe %>
+    </div>
+
+    <div class="recipes-new-footer">
+      <%= link_to "Back to recipes", recipes_path %>
+    </div>
+  </div>
+</section>

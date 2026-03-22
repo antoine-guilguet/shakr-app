@@ -1,0 +1,12 @@
+# password123 for both (bcrypt digest generated once for stable fixtures)
+one:
+  email: one@example.com
+  encrypted_password: $2a$12$g/dXqr3PYr/m4OtT5JB8SuT9BXq2.SxkW4B3tUS1aziOX3BZ9D836
+  first_name: One
+  last_name: User
+
+two:
+  email: two@example.com
+  encrypted_password: $2a$12$g/dXqr3PYr/m4OtT5JB8SuT9BXq2.SxkW4B3tUS1aziOX3BZ9D836
+  first_name: Two
+  last_name: User

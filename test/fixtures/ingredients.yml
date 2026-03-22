@@ -1,0 +1,7 @@
+gin:
+  name: Gin
+  kind: 1
+
+lemon:
+  name: Lemon juice
+  kind: 3

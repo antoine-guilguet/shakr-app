@@ -1,0 +1,86 @@
+<div class="recipes-ai-result-card">
+  <div class="ai-recipe">
+    <div class="ai-recipe-header">
+      <h2 class="ai-recipe-title"><%= @recipe.name.presence || "Untitled Cocktail" %></h2>
+
+      <% if @recipe.description.present? %>
+        <p class="ai-recipe-description"><%= @recipe.description %></p>
+      <% end %>
+
+      <% if @recipe.tags.present? %>
+        <div class="ai-recipe-tags">
+          <% Array(@recipe.tags).each do |tag| %>
+            <span class="ai-recipe-tag"><%= tag %></span>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if user_signed_in? && @recipe.user_id == current_user.id %>
+        <div class="recipes-show-actions">
+          <%= link_to "Edit", edit_recipe_path(@recipe), class: "btn-secondary" %>
+          <%= link_to "Delete",
+            recipe_path(@recipe),
+            method: :delete,
+            data: { turbo_confirm: "Are you sure you want to delete this recipe?" },
+            class: "btn-secondary recipes-action-danger" %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="ai-recipe-body">
+      <div class="ai-recipe-section">
+        <h3 class="ai-recipe-section-title">Ingredients</h3>
+
+        <% lines = @recipe.recipe_ingredients.includes(:ingredient) %>
+        <% if lines.any? %>
+          <ul class="ai-recipe-ingredients">
+            <% lines.each do |line| %>
+              <li class="ai-recipe-ingredient">
+                <span class="ai-recipe-ingredient-qty">
+                  <%= [line.amount, line.unit].compact.join(" ") %>
+                </span>
+                <span class="ai-recipe-ingredient-name"><%= line.ingredient.name %></span>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="ai-recipe-empty">No ingredients.</p>
+        <% end %>
+
+        <div class="recipes-ai-meta">
+          <% if @recipe.glassware.present? %>
+            <div class="recipes-ai-meta-item">
+              <span class="recipes-ai-meta-label">Glassware</span>
+              <span class="recipes-ai-meta-value"><%= @recipe.glassware %></span>
+            </div>
+          <% end %>
+
+          <% if @recipe.garnish.present? %>
+            <div class="recipes-ai-meta-item">
+              <span class="recipes-ai-meta-label">Garnish</span>
+              <span class="recipes-ai-meta-value"><%= @recipe.garnish %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="ai-recipe-section">
+        <h3 class="ai-recipe-section-title">Method</h3>
+
+        <% steps = Array(@recipe.steps) %>
+        <% if steps.any? %>
+          <ol class="ai-recipe-steps ai-recipe-steps--numbered">
+            <% steps.each_with_index do |step, idx| %>
+              <li class="ai-recipe-step">
+                <span class="ai-recipe-step-num"><%= idx + 1 %>.</span>
+                <span class="ai-recipe-step-text"><%= step %></span>
+              </li>
+            <% end %>
+          </ol>
+        <% else %>
+          <p class="ai-recipe-empty">No steps.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

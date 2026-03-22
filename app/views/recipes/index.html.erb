@@ -1,0 +1,59 @@
+<div class="recipes-index">
+  <div class="recipes-index-header">
+    <h1>Recipes</h1>
+    <%= link_to "Create recipe", new_recipe_path, class: "btn-primary" %>
+  </div>
+
+  <div class="recipes-index-filters" role="navigation" aria-label="Filter recipes">
+    <%= link_to "All", recipes_path, class: recipes_index_filter_class(@visibility_filter, "all") %>
+    <%= link_to "Public", recipes_path(visibility: "public"), class: recipes_index_filter_class(@visibility_filter, "public") %>
+    <%= link_to "Yours", recipes_path(visibility: "private"), class: recipes_index_filter_class(@visibility_filter, "private") %>
+  </div>
+
+  <% if @recipes.any? %>
+    <div class="recipes-index-list">
+      <% @recipes.each do |recipe| %>
+        <div class="recipes-index-card">
+          <div class="recipes-index-card-top">
+            <h2 class="recipes-index-title">
+              <%= link_to recipe.name.presence || "Untitled Cocktail", recipe_path(recipe) %>
+            </h2>
+            <div class="recipes-index-badges">
+              <% if recipe.is_public? %>
+                <span class="recipes-index-visibility recipes-index-visibility--public">Public</span>
+              <% else %>
+                <span class="recipes-index-visibility recipes-index-visibility--private">Private</span>
+              <% end %>
+            </div>
+          </div>
+
+          <% if recipe.description.present? %>
+            <p class="recipes-index-description"><%= recipe.description %></p>
+          <% end %>
+
+          <% if recipe.tags.present? %>
+            <div class="recipes-index-tags">
+              <% Array(recipe.tags).each do |tag| %>
+                <span class="recipes-index-tag"><%= tag %></span>
+              <% end %>
+            </div>
+          <% end %>
+
+          <div class="recipes-index-actions">
+            <%= link_to "Show", recipe_path(recipe) %>
+            <% if recipe.user_id == current_user.id %>
+              <%= link_to "Edit", edit_recipe_path(recipe) %>
+              <%= link_to "Delete",
+                recipe_path(recipe),
+                method: :delete,
+                data: { turbo_confirm: "Are you sure you want to delete this recipe?" } %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="recipes-index-empty">No recipes yet. Start by creating one.</p>
+  <% end %>
+</div>
+

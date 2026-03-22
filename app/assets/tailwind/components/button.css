@@ -17,5 +17,25 @@
     background: var(--shakr-amber-light);
     transform: translateY(-1px);
   }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--shakr-cream);
+    border: 1px solid rgba(201, 136, 58, 0.6);
+    padding: 0.85rem 1.4rem;
+    font-family: "DM Mono", monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s, transform 0.15s, border-color 0.25s;
+    white-space: nowrap;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(201, 136, 58, 0.12);
+    border-color: rgba(201, 136, 58, 0.9);
+    transform: translateY(-1px);
+  }
 }
 

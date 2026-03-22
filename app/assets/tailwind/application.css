@@ -1,6 +1,17 @@
 @import "tailwindcss";
 
 @import "./base.css";
-@import "./components/navbar.css";
+
+/* Core / shared components */
 @import "./components/button.css";
-@import "./pages/homepage.css";
+@import "./components/navbar.css";
+@import "./components/flash.css";
+@import "./components/auth.css";
+@import "./components/dashboard-ai.css";
+@import "./components/ai-recipe.css";
+@import "./components/recipe-detail.css";
+@import "./components/recipes-index.css";
+@import "./components/recipe-form.css";
+
+/* Route-specific (marketing landing) */
+@import "./pages/home-marketing.css";

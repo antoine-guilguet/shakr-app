@@ -10,8 +10,6 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
@@ -23,6 +21,50 @@
   </head>
 
   <body>
+    <%= render "shared/navbar" %>
+    <div class="flash-container">
+      <% flash.each do |type, message| %>
+        <% next if message.blank? %>
+        <div class="flash <%= "flash-#{type}" %>">
+          <span><%= message %></span>
+        </div>
+      <% end %>
+    </div>
+
     <%= yield %>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const flashes = document.querySelectorAll(".flash");
+
+        flashes.forEach((flash, index) => {
+          // Staggered entrance from the right
+          requestAnimationFrame(() => {
+            flash.classList.add("flash--visible");
+          });
+
+          const hideAfterMs = 3000 + index * 150;
+
+          setTimeout(() => {
+            flash.classList.remove("flash--visible");
+
+            const removeFlash = () => flash.remove();
+
+            if (flash instanceof HTMLElement) {
+              const onTransitionEnd = (event) => {
+                if (event.propertyName === "opacity") {
+                  flash.removeEventListener("transitionend", onTransitionEnd);
+                  removeFlash();
+                }
+              };
+
+              flash.addEventListener("transitionend", onTransitionEnd);
+            } else {
+              removeFlash();
+            }
+          }, hideAfterMs);
+        });
+      });
+    </script>
   </body>
 </html>

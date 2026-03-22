@@ -105,7 +105,7 @@ sugar_cube     = Ingredient.find_or_create_by!(name: "Sugar Cube")          { |i
 muddled_mint   = Ingredient.find_or_create_by!(name: "Muddled Mint Leaves") { |i| i.kind = 8 }
 muddled_lime   = Ingredient.find_or_create_by!(name: "Muddled Lime")        { |i| i.kind = 8 }
 tabasco        = Ingredient.find_or_create_by!(name: "Tabasco")             { |i| i.kind = 8 }
-worcestershire = Ingredient.find_or_create_by!(name: "Worcestershire Sauce"){ |i| i.kind = 8 }
+worcestershire = Ingredient.find_or_create_by!(name: "Worcestershire Sauce") { |i| i.kind = 8 }
 horseradish    = Ingredient.find_or_create_by!(name: "Horseradish")         { |i| i.kind = 8 }
 
 puts "Creating recipes..."

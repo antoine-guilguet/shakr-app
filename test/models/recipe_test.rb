@@ -6,7 +6,7 @@ class RecipeTest < ActiveSupport::TestCase
       name: "Gin highball",
       user: users(:one),
       tags: [],
-      steps: ["stir"],
+      steps: [ "stir" ],
       recipe_ingredients_attributes: {
         "0" => {
           ingredient_id: ingredients(:gin).id,
@@ -24,6 +24,6 @@ class RecipeTest < ActiveSupport::TestCase
   test "fixture recipe has ordered recipe ingredients" do
     r = recipes(:one)
     names = r.recipe_ingredients.map { |line| line.ingredient.name }
-    assert_equal ["Gin", "Lemon juice"], names
+    assert_equal [ "Gin", "Lemon juice" ], names
   end
 end

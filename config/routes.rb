@@ -5,6 +5,9 @@ Rails.application.routes.draw do
 
   resources :recipes
   resources :realtime_sessions, only: :create
+  namespace :agent do
+    post "tools/:name", to: "tools#create", as: :tool
+  end
   get "voice", to: "voice#show", as: :voice
   get "home", to: "home#index"
 

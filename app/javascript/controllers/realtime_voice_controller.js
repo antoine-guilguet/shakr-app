@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["button", "status"]
+  static targets = ["button", "status", "transcript"]
   static values = {
     sessionUrl: String
   }
@@ -12,6 +12,11 @@ export default class extends Controller {
     this.dataChannel = null
     this.audioEl = null
     this.active = false
+    this.drafts = new Map()
+    this.functionArgDeltas = new Map()
+    this.handledCallIds = new Set()
+    this.currentDraftRecipe = null
+    this.currentDraftRecipeId = null
     this.setUiIdle()
   }
 
@@ -57,6 +62,244 @@ export default class extends Controller {
 
   csrfToken() {
     return document.querySelector('meta[name="csrf-token"]')?.getAttribute("content")
+  }
+
+  ensureDraft(key, role) {
+    if (!this.hasTranscriptTarget) return null
+    if (this.drafts.has(key)) return this.drafts.get(key)
+
+    const row = document.createElement("div")
+    row.className = `voice-msg voice-msg--${role} voice-msg--draft`
+    row.dataset.draftKey = key
+
+    const who = document.createElement("div")
+    who.className = "voice-msg__who"
+    who.textContent = role === "user" ? "You" : "Shakr"
+
+    const body = document.createElement("div")
+    body.className = "voice-msg__body"
+    body.textContent = ""
+
+    row.appendChild(who)
+    row.appendChild(body)
+    this.transcriptTarget.appendChild(row)
+    this.drafts.set(key, row)
+    this.scrollTranscriptToBottom()
+    return row
+  }
+
+  appendDraftText(key, role, delta) {
+    if (!delta) return
+    const row = this.ensureDraft(key, role)
+    if (!row) return
+    const body = row.querySelector(".voice-msg__body")
+    body.textContent += delta
+    this.scrollTranscriptToBottom()
+  }
+
+  finalizeDraft(key, finalText) {
+    const row = this.drafts.get(key)
+    if (!row) return
+    const body = row.querySelector(".voice-msg__body")
+    if (typeof finalText === "string" && finalText.length > 0) {
+      body.textContent = finalText
+    }
+    row.classList.remove("voice-msg--draft")
+    this.drafts.delete(key)
+    this.scrollTranscriptToBottom()
+  }
+
+  scrollTranscriptToBottom() {
+    if (!this.hasTranscriptTarget) return
+    this.transcriptTarget.scrollTop = this.transcriptTarget.scrollHeight
+  }
+
+  sendRealtimeEvent(payload) {
+    if (!this.dataChannel || this.dataChannel.readyState !== "open") return false
+    try {
+      this.dataChannel.send(JSON.stringify(payload))
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  async handleFunctionCall({ name, callId, argumentsJson }) {
+    if (!name || !callId) return
+    if (this.handledCallIds.has(callId)) return
+    this.handledCallIds.add(callId)
+
+    let args = {}
+    if (typeof argumentsJson === "string" && argumentsJson.length > 0) {
+      try {
+        args = JSON.parse(argumentsJson)
+      } catch {
+        args = {}
+      }
+    }
+
+    let result
+    try {
+      const res = await fetch(`/agent/tools/${encodeURIComponent(name)}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRF-Token": this.csrfToken()
+        },
+        credentials: "same-origin",
+        body: JSON.stringify(args)
+      })
+
+      result = await res.json().catch(() => null)
+      if (!res.ok) {
+        result = result || {}
+        result.error = result.error || `Tool failed (${res.status})`
+      }
+    } catch (e) {
+      result = { error: e?.message || "Tool request failed." }
+    }
+
+    if (name === "recipes_search" && result?.found && result?.recipe) {
+      this.appendRecipeCard(result.recipe)
+    }
+
+    if (name === "create_ai_recipe" && result?.ok && result?.recipe) {
+      this.currentDraftRecipe = result.recipe
+      this.currentDraftRecipeId =
+        (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function" && globalThis.crypto.randomUUID()) ||
+        `draft_${Date.now()}_${Math.random().toString(16).slice(2)}`
+      this.appendAiRecipeCard(result.recipe, { draftId: this.currentDraftRecipeId })
+    }
+
+    this.sendRealtimeEvent({
+      type: "conversation.item.create",
+      item: {
+        type: "function_call_output",
+        call_id: callId,
+        output: JSON.stringify(result || {})
+      }
+    })
+
+    this.sendRealtimeEvent({ type: "response.create" })
+  }
+
+  appendRecipeCard(recipe) {
+    if (!this.hasTranscriptTarget || !recipe) return
+
+    const row = document.createElement("div")
+    row.className = "voice-msg voice-msg--tool"
+
+    const who = document.createElement("div")
+    who.className = "voice-msg__who"
+    who.textContent = "Shakr"
+
+    const body = document.createElement("div")
+    body.className = "voice-msg__body"
+
+    const title = document.createElement("div")
+    title.className = "voice-recipe-card__title"
+
+    const link = document.createElement("a")
+    link.href = recipe.url || "#"
+    link.textContent = recipe.name || "Recipe"
+    link.className = "voice-recipe-card__link"
+
+    const badge = document.createElement("span")
+    badge.className = `voice-recipe-card__badge ${recipe.is_public ? "voice-recipe-card__badge--public" : "voice-recipe-card__badge--private"}`
+    badge.textContent = recipe.is_public ? "Public" : "Private"
+
+    title.appendChild(link)
+    title.appendChild(badge)
+
+    const desc = document.createElement("div")
+    desc.className = "voice-recipe-card__desc"
+    desc.textContent = (recipe.description || "").toString()
+
+    body.appendChild(title)
+    if (desc.textContent.length > 0) body.appendChild(desc)
+
+    row.appendChild(who)
+    row.appendChild(body)
+    this.transcriptTarget.appendChild(row)
+    this.scrollTranscriptToBottom()
+  }
+
+  appendAiRecipeCard(recipe, { draftId } = {}) {
+    if (!this.hasTranscriptTarget || !recipe) return
+
+    const row = document.createElement("div")
+    row.className = "voice-msg voice-msg--tool"
+    if (draftId) row.dataset.draftId = draftId
+
+    const who = document.createElement("div")
+    who.className = "voice-msg__who"
+    who.textContent = "Shakr"
+
+    const body = document.createElement("div")
+    body.className = "voice-msg__body"
+
+    const title = document.createElement("div")
+    title.className = "voice-recipe-card__title"
+
+    const name = document.createElement("div")
+    name.className = "voice-recipe-card__name"
+    name.textContent = recipe.name || "Draft recipe"
+
+    const badge = document.createElement("span")
+    badge.className = "voice-recipe-card__badge voice-recipe-card__badge--draft"
+    badge.textContent = "Draft"
+
+    title.appendChild(name)
+    title.appendChild(badge)
+
+    const desc = document.createElement("div")
+    desc.className = "voice-recipe-card__desc"
+    desc.textContent = (recipe.description || "").toString()
+
+    const ingredients = Array.isArray(recipe.ingredients) ? recipe.ingredients : []
+    const steps = Array.isArray(recipe.steps) ? recipe.steps : []
+
+    const ingList = document.createElement("ul")
+    ingList.className = "voice-recipe-card__list"
+    for (const ing of ingredients) {
+      const li = document.createElement("li")
+      const qty = ing?.quantity ? `${ing.quantity}` : ""
+      const unit = ing?.unit ? `${ing.unit}` : ""
+      const ingName = ing?.name ? `${ing.name}` : ""
+      li.textContent = [qty, unit, ingName].filter(Boolean).join(" ").trim()
+      if (li.textContent.length > 0) ingList.appendChild(li)
+    }
+
+    const stepsList = document.createElement("ol")
+    stepsList.className = "voice-recipe-card__list voice-recipe-card__steps"
+    steps.slice(0, 2).forEach((s) => {
+      const li = document.createElement("li")
+      li.textContent = s.toString()
+      stepsList.appendChild(li)
+    })
+
+    body.appendChild(title)
+    if (desc.textContent.length > 0) body.appendChild(desc)
+    if (ingList.childElementCount > 0) {
+      const h = document.createElement("div")
+      h.className = "voice-recipe-card__section"
+      h.textContent = "Ingredients"
+      body.appendChild(h)
+      body.appendChild(ingList)
+    }
+    if (stepsList.childElementCount > 0) {
+      const h = document.createElement("div")
+      h.className = "voice-recipe-card__section"
+      h.textContent = "Steps (preview)"
+      body.appendChild(h)
+      body.appendChild(stepsList)
+    }
+
+    row.appendChild(who)
+    row.appendChild(body)
+    this.transcriptTarget.appendChild(row)
+    this.scrollTranscriptToBottom()
   }
 
   async startSession() {
@@ -119,6 +362,75 @@ export default class extends Controller {
     this.dataChannel.addEventListener("message", (e) => {
       try {
         const event = JSON.parse(e.data)
+        if (event.type === "conversation.item.input_audio_transcription.delta") {
+          const key = `user:${event.item_id || "unknown"}`
+          this.appendDraftText(key, "user", event.delta)
+          return
+        }
+
+        if (event.type === "conversation.item.input_audio_transcription.completed") {
+          const key = `user:${event.item_id || "unknown"}`
+          this.finalizeDraft(key, event.transcript)
+          return
+        }
+
+        if (event.type === "response.text.delta") {
+          const key = `assistant:${event.response_id || "current"}`
+          this.appendDraftText(key, "assistant", event.delta)
+          return
+        }
+
+        if (event.type === "response.output_audio_transcript.delta") {
+          const key = `assistant:${event.response_id || "current"}`
+          this.appendDraftText(key, "assistant", event.delta)
+          return
+        }
+
+        if (event.type === "response.output_audio_transcript.done") {
+          const key = `assistant:${event.response_id || "current"}`
+          this.finalizeDraft(key, event.transcript)
+          return
+        }
+
+        if (event.type === "response.completed") {
+          const key = `assistant:${event.response_id || "current"}`
+          this.finalizeDraft(key)
+          return
+        }
+
+        if (event.type === "response.function_call_arguments.delta") {
+          const callId = event.call_id
+          if (callId) {
+            const prev = this.functionArgDeltas.get(callId) || ""
+            this.functionArgDeltas.set(callId, prev + (event.delta || ""))
+          }
+          return
+        }
+
+        if (event.type === "response.function_call_arguments.done") {
+          const callId = event.call_id
+          const name = event.name
+          const argsJson = typeof event.arguments === "string" ? event.arguments : (this.functionArgDeltas.get(callId) || "")
+          this.functionArgDeltas.delete(callId)
+          this.handleFunctionCall({ name, callId, argumentsJson: argsJson })
+          return
+        }
+
+        // Fallback path: tool calls can also appear in `response.done`
+        if (event.type === "response.done") {
+          const output = event?.response?.output || []
+          for (const item of output) {
+            if (item?.type === "function_call") {
+              this.handleFunctionCall({
+                name: item.name,
+                callId: item.call_id,
+                argumentsJson: item.arguments
+              })
+            }
+          }
+          return
+        }
+
         if (event.type === "error") {
           console.warn("[oai-events]", event)
         } else {
@@ -172,6 +484,10 @@ export default class extends Controller {
   }
 
   cleanupPeer() {
+    this.drafts?.clear?.()
+    this.functionArgDeltas?.clear?.()
+    this.handledCallIds?.clear?.()
+
     if (this.dataChannel) {
       try {
         this.dataChannel.close()

@@ -51,8 +51,7 @@ class RecipeGenerator
 
     chat_response = perform_request
     payload = parse_response(chat_response)
-    attributes = normalize_recipe(payload)
-    persist_recipe(attributes)
+    normalize_recipe(payload)
   rescue Error
     raise
   rescue StandardError => e
@@ -160,36 +159,5 @@ class RecipeGenerator
       glassware: recipe["glassware"].to_s.presence,
       garnish: recipe["garnish"].to_s.presence
     }
-  end
-
-  def persist_recipe(attributes)
-    Recipe.transaction do
-      recipe = Recipe.create!(
-        user: @user,
-        name: attributes[:name],
-        description: attributes[:description],
-        tags: attributes[:tags],
-        steps: attributes[:steps],
-        glassware: attributes[:glassware],
-        garnish: attributes[:garnish]
-      )
-
-      Array(attributes[:ingredients]).each_with_index do |ing, index|
-        ingredient = Ingredient.find_or_create_by_name!(ing[:name], kind: :mixer)
-        recipe.recipe_ingredients.create!(
-          ingredient: ingredient,
-          amount: BigDecimal(ing[:quantity].to_s),
-          unit: ing[:unit],
-          position: index
-        )
-      end
-
-      recipe
-    end
-  rescue ActiveRecord::RecordInvalid => e
-    Rails.logger.error(
-      "[RecipeGenerator] Failed to persist recipe: #{e.record.errors.full_messages.join(", ")}"
-    )
-    attributes
   end
 end

@@ -28,6 +28,26 @@
     color: var(--shakr-text-muted);
   }
 
+  .navbar-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .navbar-nav-link {
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .navbar-nav-link:hover {
+    color: var(--shakr-amber);
+  }
+
   .navbar-right {
     display: flex;
     align-items: center;

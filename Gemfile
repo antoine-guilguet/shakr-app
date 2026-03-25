@@ -22,6 +22,9 @@ gem "jbuilder"
 # Use Devise for authentication [https://github.com/heartcombo/devise]
 gem "devise"
 
+# Official OpenAI API client for Ruby [https://github.com/alexrudall/ruby-openai]
+gem "ruby-openai", "~> 8.3"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 

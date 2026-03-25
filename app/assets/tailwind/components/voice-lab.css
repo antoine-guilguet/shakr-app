@@ -1,0 +1,88 @@
+@layer components {
+  .voice-lab {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 4rem 4rem 5rem;
+    border-top: 1px solid rgba(201, 136, 58, 0.12);
+  }
+
+  .voice-lab-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .voice-lab-title {
+    margin: 0 0 1rem;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--shakr-cream);
+  }
+
+  .voice-lab-lede {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.85;
+    letter-spacing: 0.04em;
+    color: var(--shakr-text-muted);
+  }
+
+  .voice-lab-panel {
+    padding: 2rem 2rem 1.75rem;
+    border-radius: 1.4rem;
+    border: 1px solid rgba(201, 136, 58, 0.22);
+    background: rgba(8, 6, 4, 0.96);
+    box-shadow: 0 26px 60px rgba(0, 0, 0, 0.55);
+  }
+
+  .voice-lab-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .voice-lab-status {
+    margin: 1.25rem 0 0;
+    min-height: 1.25rem;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: var(--shakr-amber-light);
+  }
+
+  .voice-lab-status:empty {
+    display: none;
+  }
+
+  .voice-lab-hint {
+    margin: 1.5rem 0 0;
+    font-size: 0.65rem;
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+    color: var(--shakr-text-muted);
+  }
+
+  .voice-lab-code {
+    font-family: "DM Mono", monospace;
+    font-size: 0.6rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.35rem;
+    background: rgba(201, 136, 58, 0.12);
+    color: var(--shakr-cream);
+  }
+
+  .voice-lab-back {
+    margin: 2.5rem 0 0;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .voice-lab-back a {
+    color: var(--shakr-amber);
+    text-decoration: none;
+  }
+
+  .voice-lab-back a:hover {
+    text-decoration: underline;
+  }
+}

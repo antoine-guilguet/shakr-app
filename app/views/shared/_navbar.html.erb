@@ -12,6 +12,13 @@
     <div class="navbar-tagline">AI Cocktail Companion</div>
   </div>
 
+  <% if user_signed_in? %>
+    <nav class="navbar-nav" aria-label="App">
+      <%= link_to "Recipes", recipes_path, class: "navbar-nav-link" %>
+      <%= link_to "Voice", voice_path, class: "navbar-nav-link" %>
+    </nav>
+  <% end %>
+
   <div class="navbar-right">
     <% if user_signed_in? %>
       <details class="navbar-user-menu">

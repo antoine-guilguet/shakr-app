@@ -1,12 +1,9 @@
-require "net/http"
 require "json"
 
 class RecipeGenerator
   class Error < StandardError; end
 
-  API_BASE = Rails.configuration.x.openai&.api_base || "https://api.openai.com/v1"
   DEFAULT_MODEL = Rails.configuration.x.openai&.model || ENV.fetch("OPENAI_MODEL", "gpt-4.1-mini")
-  OPENAI_API_URL = "#{API_BASE}/chat/completions"
 
   ALLOWED_UNITS = %w[ml cl oz dash piece tsp].freeze
 
@@ -52,8 +49,8 @@ class RecipeGenerator
   def call
     raise Error, "Please describe what you're in the mood for." if @prompt.blank?
 
-    response_body = perform_request
-    payload = parse_response(response_body)
+    chat_response = perform_request
+    payload = parse_response(chat_response)
     attributes = normalize_recipe(payload)
     persist_recipe(attributes)
   rescue Error
@@ -68,52 +65,38 @@ class RecipeGenerator
   private
 
   def perform_request
-    uri = URI(OPENAI_API_URL)
+    ensure_openai_configured!
 
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = (uri.scheme == "https")
-    http.read_timeout = 25
-    http.open_timeout = 5
-
-    request = Net::HTTP::Post.new(
-      uri,
-      "Content-Type" => "application/json",
-      "Authorization" => "Bearer #{openai_api_key}"
-    )
-
-    request.body = {
-      model: DEFAULT_MODEL,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        {
-          role: "user",
-          content: build_user_content
-        }
-      ]
-    }.to_json
-
+    client = OpenAI::Client.new(request_timeout: 25)
     started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    response = http.request(request)
+    response = client.chat(
+      parameters: {
+        model: DEFAULT_MODEL,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: build_user_content }
+        ]
+      }
+    )
     duration_ms = ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - started_at) * 1000).round
 
     Rails.logger.info(
-      "[RecipeGenerator] OpenAI request completed status=#{response.code} duration_ms=#{duration_ms}"
+      "[RecipeGenerator] OpenAI request completed duration_ms=#{duration_ms}"
     )
 
-    unless response.is_a?(Net::HTTPSuccess)
-      Rails.logger.error(
-        "[RecipeGenerator] OpenAI error status=#{response.code} body=#{response.body&.slice(0, 500)}"
-      )
-      raise Error, "The AI service is unavailable right now. Please try again in a moment."
-    end
-
-    response.body
+    response
+  rescue Faraday::Error => e
+    body = e.response&.dig(:body)
+    body = body.to_json if body.is_a?(Hash)
+    Rails.logger.error(
+      "[RecipeGenerator] OpenAI error: #{e.class} body=#{body.to_s.slice(0, 500)}"
+    )
+    raise Error, "The AI service is unavailable right now. Please try again in a moment."
   end
 
-  def openai_api_key
-    key = ENV["OPENAI_API_KEY"]
-    return key if key.present?
+  def ensure_openai_configured!
+    return if ENV["OPENAI_API_KEY"].present?
 
     Rails.logger.error("[RecipeGenerator] OPENAI_API_KEY is not set")
     raise Error, "AI is not configured yet. Please contact support."
@@ -128,19 +111,19 @@ class RecipeGenerator
     base
   end
 
-  def parse_response(response_body)
-    parsed = JSON.parse(response_body)
-    content = parsed.dig("choices", 0, "message", "content")
+  def parse_response(chat_response)
+    content = chat_response.dig("choices", 0, "message", "content")
 
     unless content
-      Rails.logger.error("[RecipeGenerator] Missing message content in response: #{response_body.slice(0, 500)}")
+      snippet = chat_response.to_json.slice(0, 500)
+      Rails.logger.error("[RecipeGenerator] Missing message content in response: #{snippet}")
       raise Error, "The AI response was incomplete. Please try again."
     end
 
     JSON.parse(content)
   rescue JSON::ParserError => e
     Rails.logger.error(
-      "[RecipeGenerator] JSON parsing error: #{e.message} body=#{response_body.slice(0, 500)}"
+      "[RecipeGenerator] JSON parsing error: #{e.message} content=#{content.to_s.slice(0, 500)}"
     )
     raise Error, "The AI returned an invalid response. Please try again."
   end

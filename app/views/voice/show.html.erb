@@ -1,0 +1,34 @@
+<% content_for :title, "Voice — Shakr" %>
+
+<div class="voice-lab">
+  <header class="voice-lab-header">
+    <h1 class="voice-lab-title">Voice assistant</h1>
+    <p class="voice-lab-lede">
+      Test the OpenAI Realtime connection: allow the microphone, then speak. The model replies over WebRTC.
+    </p>
+  </header>
+
+  <section
+    class="voice-lab-panel"
+    data-controller="realtime-voice"
+    data-realtime-voice-session-url-value="<%= realtime_sessions_path %>"
+    aria-label="Realtime voice session"
+  >
+    <button
+      type="button"
+      class="btn-secondary voice-lab-button"
+      data-realtime-voice-target="button"
+      data-action="click->realtime-voice#toggle"
+    >
+      Talk to Shakr
+    </button>
+    <p class="voice-lab-status" data-realtime-voice-target="status" role="status"></p>
+    <p class="voice-lab-hint">
+      Open the browser devtools console to inspect <code class="voice-lab-code">oai-events</code> payloads while debugging.
+    </p>
+  </section>
+
+  <p class="voice-lab-back">
+    <%= link_to "← Back to recipes", recipes_path %>
+  </p>
+</div>

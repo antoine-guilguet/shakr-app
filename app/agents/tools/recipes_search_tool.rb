@@ -32,13 +32,10 @@ module Tools
         visibility = parse_visibility(input["visibility"])
         relation = base_relation_for(user:, visibility:)
 
-        q = query.downcase
-        like = "%#{ActiveRecord::Base.sanitize_sql_like(q)}%"
+        normalized = Recipes::QueryNormalizer.call(query)
+        return { found: false } if normalized.blank?
 
-        recipe = relation
-          .where("LOWER(recipes.name) LIKE :q OR LOWER(COALESCE(recipes.description, '')) LIKE :q OR LOWER(COALESCE(recipes.tags::text, '')) LIKE :q", q: like)
-          .order(updated_at: :desc)
-          .first
+        recipe = Recipes::Search.call(relation:, query: normalized)
 
         return { found: false } unless recipe
 

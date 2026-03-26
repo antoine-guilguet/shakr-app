@@ -90,6 +90,26 @@ class Agent::ToolsControllerTest < ActionDispatch::IntegrationTest
     assert_equal false, body["found"]
   end
 
+  test "recipes_search normalizes noisy voice-style query" do
+    Recipe.create!(
+      user: @other_user,
+      name: "Pisco Sour",
+      description: "Classic",
+      is_public: true,
+      tags: ["sour"],
+      steps: ["Shake"]
+    )
+
+    post agent_tool_path(name: "recipes_search"),
+      params: { query: "I want a pisco sour", visibility: "public" },
+      as: :json
+
+    assert_response :success
+    body = response.parsed_body
+    assert_equal true, body["found"]
+    assert_equal "Pisco Sour", body.dig("recipe", "name")
+  end
+
   test "create_ai_recipe returns a draft recipe for a valid prompt" do
     fake_attributes = {
       name: "Draft Daiquiri",

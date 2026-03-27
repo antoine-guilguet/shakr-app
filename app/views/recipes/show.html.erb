@@ -1,4 +1,4 @@
-<div class="recipes-ai-result-card">
+<div class="recipes-ai-result-card<%= " recipes-show--voice-fab" if user_signed_in? %>">
   <div class="ai-recipe">
     <div class="ai-recipe-header">
       <h2 class="ai-recipe-title"><%= @recipe.name.presence || "Untitled Cocktail" %></h2>
@@ -90,4 +90,8 @@
       </div>
     </div>
   </div>
+
+  <% if user_signed_in? %>
+    <%= render "shared/voice_agent_fab", mode: :link %>
+  <% end %>
 </div>

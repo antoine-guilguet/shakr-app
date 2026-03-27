@@ -39,6 +39,8 @@ module Tools
 
         return { found: false } unless recipe
 
+        recipe = Recipe.includes(recipe_ingredients: :ingredient).find(recipe.id)
+
         {
           found: true,
           recipe: {
@@ -47,12 +49,32 @@ module Tools
             is_public: recipe.is_public?,
             description: recipe.description.to_s,
             tags: Array(recipe.tags),
-            url: Rails.application.routes.url_helpers.recipe_path(recipe)
+            url: Rails.application.routes.url_helpers.recipe_path(recipe),
+            ingredients: ingredient_lines_for(recipe),
+            steps_preview: Array(recipe.steps).map(&:to_s).map(&:strip).reject(&:blank?)
           }
         }
       end
 
       private
+
+      def ingredient_lines_for(recipe)
+        recipe.recipe_ingredients.map do |ri|
+          name = ri.ingredient&.name.to_s.strip
+          next if name.blank?
+
+          qty = ri.amount
+          qty_str =
+            if qty.nil?
+              ""
+            else
+              qty.to_s.sub(/\.0+\z/, "").sub(/\.\z/, "")
+            end
+
+          unit = ri.unit.to_s.strip
+          [qty_str, unit, name].map(&:to_s).reject(&:blank?).join(" ").strip
+        end.compact
+      end
 
       def base_relation_for(user:, visibility:)
         case visibility

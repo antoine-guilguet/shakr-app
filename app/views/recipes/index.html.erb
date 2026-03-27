@@ -1,4 +1,4 @@
-<div class="recipes-index">
+<div class="recipes-index<%= " recipes-index--voice-fab" if user_signed_in? %>">
   <div class="recipes-index-header">
     <h1>Your Bar</h1>
     <div class="recipes-index-header-actions">
@@ -47,5 +47,9 @@
     </div>
   <% else %>
     <p class="recipes-index-empty">No recipes yet. Start by creating one.</p>
+  <% end %>
+
+  <% if user_signed_in? %>
+    <%= render "shared/voice_agent_fab", mode: :link %>
   <% end %>
 </div>

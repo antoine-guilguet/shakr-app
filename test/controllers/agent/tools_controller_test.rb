@@ -40,6 +40,43 @@ class Agent::ToolsControllerTest < ActionDispatch::IntegrationTest
     assert_equal true, body.dig("recipe", "is_public")
   end
 
+  test "recipes_search returns ingredients and steps_preview for slider UI" do
+    recipe = Recipe.create!(
+      user: @user,
+      name: "Slider Sour",
+      description: "Voice slider fixture",
+      is_public: false,
+      tags: ["test"],
+      steps: ["Dry shake egg white", "Shake with ice and fine strain"]
+    )
+    RecipeIngredient.create!(
+      recipe: recipe,
+      ingredient: ingredients(:gin),
+      amount: 45,
+      unit: "ml",
+      position: 0
+    )
+    RecipeIngredient.create!(
+      recipe: recipe,
+      ingredient: ingredients(:lemon),
+      amount: 25,
+      unit: "ml",
+      position: 1
+    )
+
+    post agent_tool_path(name: "recipes_search"),
+      params: { query: "Slider Sour", visibility: "private" },
+      as: :json
+
+    assert_response :success
+    body = response.parsed_body
+    assert_equal true, body["found"]
+    ingredients = body.dig("recipe", "ingredients")
+    assert ingredients.is_a?(Array)
+    assert(ingredients.any? { |line| line.to_s.include?("Gin") })
+    assert_equal ["Dry shake egg white", "Shake with ice and fine strain"], body.dig("recipe", "steps_preview")
+  end
+
   test "recipes_search can return the current user's private recipe" do
     Recipe.create!(
       user: @user,

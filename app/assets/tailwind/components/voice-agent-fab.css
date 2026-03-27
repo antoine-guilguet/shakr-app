@@ -1,0 +1,50 @@
+@layer components {
+  .voice-agent-fab {
+    position: fixed;
+    left: 50%;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 150;
+    min-width: 11rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 9999px;
+    background: var(--shakr-amber);
+    color: var(--shakr-black);
+    font-family: "DM Mono", monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    transition: background 0.25s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  a.voice-agent-fab {
+    text-decoration: none;
+  }
+
+  .voice-agent-fab:hover:not(:disabled) {
+    background: var(--shakr-amber-light);
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .voice-agent-fab:disabled {
+    opacity: 0.65;
+    cursor: wait;
+  }
+
+  .recipes-index--voice-fab,
+  .recipes-show--voice-fab {
+    padding-bottom: max(5.5rem, calc(4.5rem + env(safe-area-inset-bottom)));
+  }
+
+  .voice-lab--voice-fab {
+    padding-bottom: max(5.5rem, calc(4.5rem + env(safe-area-inset-bottom)));
+  }
+}

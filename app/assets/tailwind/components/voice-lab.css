@@ -96,6 +96,168 @@
     margin-top: 0.5rem;
   }
 
+  /* Fancy two-step slider card */
+  .voice-recipe-card--fancy {
+    margin-top: 0.35rem;
+    padding: 1rem 1rem 0.85rem;
+    border-radius: 1.15rem;
+    border: 1px solid rgba(201, 136, 58, 0.28);
+    background:
+      linear-gradient(165deg, rgba(255, 255, 255, 0.06) 0%, rgba(0, 0, 0, 0) 42%),
+      rgba(6, 5, 4, 0.92);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 18px 40px rgba(0, 0, 0, 0.35);
+  }
+
+  .voice-recipe-card__slider {
+    overflow: hidden;
+    border-radius: 0.85rem;
+    margin: 0 -0.15rem;
+  }
+
+  .voice-recipe-card__track {
+    display: flex;
+    width: 200%;
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+
+  .voice-recipe-card__slide {
+    flex: 0 0 50%;
+    width: 50%;
+    min-width: 50%;
+    box-sizing: border-box;
+    padding: 0.25rem 0.35rem 0.5rem;
+  }
+
+  .voice-recipe-card__slide-inner {
+    min-height: 6.5rem;
+  }
+
+  .voice-recipe-card__empty-hint {
+    margin: 0.5rem 0 0;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--shakr-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .voice-recipe-card__slider-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.85rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(201, 136, 58, 0.14);
+  }
+
+  .voice-recipe-card__slider-btn {
+    flex: 0 0 auto;
+    min-height: 2.25rem;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--shakr-cream);
+    background: rgba(201, 136, 58, 0.1);
+    border: 1px solid rgba(201, 136, 58, 0.35);
+    border-radius: 999px;
+    cursor: pointer;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      opacity 0.15s ease;
+  }
+
+  .voice-recipe-card__slider-btn:hover:not(:disabled) {
+    background: rgba(201, 136, 58, 0.2);
+    border-color: rgba(201, 136, 58, 0.55);
+  }
+
+  .voice-recipe-card__slider-btn:focus-visible {
+    outline: 2px solid rgba(201, 136, 58, 0.55);
+    outline-offset: 2px;
+  }
+
+  .voice-recipe-card__slider-btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+  }
+
+  .voice-recipe-card__slider-indicator {
+    flex: 1;
+    text-align: center;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .voice-recipe-card__list--ingredients {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.45rem;
+  }
+
+  .voice-recipe-card__list--ingredients li {
+    position: relative;
+    padding-left: 0.85rem;
+    margin: 0.28rem 0;
+    font-size: 0.74rem;
+    line-height: 1.45;
+    color: var(--shakr-cream);
+  }
+
+  .voice-recipe-card__list--ingredients li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(201, 136, 58, 0.75);
+  }
+
+  .voice-recipe-card__steps--fancy {
+    counter-reset: voice-step;
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.45rem;
+  }
+
+  .voice-recipe-card__steps--fancy li {
+    position: relative;
+    margin: 0.55rem 0;
+    padding-left: 2.1rem;
+    font-size: 0.74rem;
+    line-height: 1.5;
+    color: var(--shakr-cream);
+    counter-increment: voice-step;
+  }
+
+  .voice-recipe-card__steps--fancy li::before {
+    content: counter(voice-step, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 0.05rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    color: rgba(255, 250, 240, 0.92);
+    background: rgba(201, 136, 58, 0.18);
+    border: 1px solid rgba(201, 136, 58, 0.35);
+    border-radius: 0.45rem;
+  }
+
   .voice-recipe-card__title {
     display: flex;
     align-items: center;

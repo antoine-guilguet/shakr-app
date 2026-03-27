@@ -14,6 +14,7 @@
 @import "./components/recipe-detail.css";
 @import "./components/recipes-index.css";
 @import "./components/voice-lab.css";
+@import "./components/voice-agent-fab.css";
 @import "./components/recipe-form.css";
 
 /* Route-specific (marketing landing) */

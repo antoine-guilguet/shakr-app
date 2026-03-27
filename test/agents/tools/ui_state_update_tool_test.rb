@@ -20,7 +20,10 @@ class UiStateUpdateToolTest < ActionDispatch::IntegrationTest
         recipe: {
           name: "House Gimlet",
           description: "Bright and tart",
-          ingredients: ["50 ml gin", "25 ml lime juice"],
+          ingredients: [
+            { name: "Gin", quantity: 50, unit: "ml" },
+            { "name" => "Lime juice", "quantity" => 25, "unit" => "ml" }
+          ],
           steps_preview: ["Shake with ice", "Fine strain"]
         }
       },
@@ -33,6 +36,8 @@ class UiStateUpdateToolTest < ActionDispatch::IntegrationTest
     assert_equal "clarifying", body["phase"]
     assert_equal 1, Array(body["actions"]).length
     assert_equal "House Gimlet", body.dig("recipe", "name")
+    assert_equal "50 ml Gin", body.dig("recipe", "ingredients", 0)
+    assert_equal "25 ml Lime juice", body.dig("recipe", "ingredients", 1)
   end
 
   test "ui_state_update requires at least one state field" do

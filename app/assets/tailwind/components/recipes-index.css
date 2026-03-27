@@ -1,29 +1,41 @@
 @layer components {
   .recipes-index {
-    padding: 4rem 4rem 5rem;
+    padding: var(--section-pad-y) 0;
     border-top: 1px solid rgba(201, 136, 58, 0.12);
   }
 
   .recipes-index-header {
-    max-width: 900px;
-    margin: 0 auto 2.5rem;
+    margin: 0 auto 1.4rem;
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 1.5rem;
+    justify-content: space-between;
+    gap: 0.85rem 1rem;
   }
 
   .recipes-index-header h1 {
+    margin: 0;
+    flex: 1 1 auto;
+    min-width: min(100%, 12rem);
     font-family: "Cormorant Garamond", serif;
-    font-size: 2rem;
+    font-size: 1.65rem;
     font-weight: 300;
     font-style: italic;
     color: var(--shakr-cream);
   }
 
+  .recipes-index-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.65rem 0.85rem;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
   .recipes-index-filters {
-    max-width: 900px;
-    margin: 0 auto 1.75rem;
+    margin: 0;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -31,7 +43,8 @@
   }
 
   .recipes-index-filter {
-    padding: 0.4rem 0.85rem;
+    min-height: 2.35rem;
+    padding: 0.4rem 0.8rem;
     border-radius: 999px;
     border: 1px solid rgba(201, 136, 58, 0.35);
     font-size: 0.58rem;
@@ -53,19 +66,53 @@
     background: rgba(201, 136, 58, 0.12);
   }
 
+  /* One row: title + filters (mobile has no Create button in header) */
+  @media (max-width: 47.99rem) {
+    .recipes-index-header {
+      flex-wrap: nowrap;
+      gap: 0.5rem 0.65rem;
+    }
+
+    .recipes-index-header h1 {
+      min-width: 0;
+      flex: 1 1 auto;
+      font-size: 1.35rem;
+      line-height: 1.15;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .recipes-index-header-actions {
+      flex-wrap: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .recipes-index-filters {
+      flex-wrap: nowrap;
+      gap: 0.35rem;
+    }
+
+    .recipes-index-filter {
+      min-height: 2rem;
+      padding: 0.32rem 0.55rem;
+      font-size: 0.52rem;
+      letter-spacing: 0.1em;
+    }
+  }
+
   .recipes-index-list {
-    max-width: 1100px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.95rem;
   }
 
   .recipes-index-card {
     background: rgba(8, 6, 4, 0.96);
     border-radius: 1.4rem;
     border: 1px solid rgba(201, 136, 58, 0.22);
-    padding: 1.6rem 1.7rem 1.5rem;
+    padding: 1rem 1rem 1.05rem;
     box-shadow: 0 26px 60px rgba(0, 0, 0, 0.55);
   }
 
@@ -123,7 +170,7 @@
   .recipes-index-title a {
     display: inline-block;
     font-family: "Cormorant Garamond", serif;
-    font-size: 1.35rem;
+    font-size: 1.2rem;
     font-weight: 300;
     color: var(--shakr-cream);
     text-decoration: none;
@@ -135,8 +182,8 @@
 
   .recipes-index-description {
     margin-top: 0.35rem;
-    font-size: 0.72rem;
-    line-height: 1.9;
+    font-size: 0.68rem;
+    line-height: 1.75;
     color: var(--shakr-text-muted);
     letter-spacing: 0.05em;
   }
@@ -159,10 +206,10 @@
   }
 
   .recipes-index-actions {
-    margin-top: 1.2rem;
+    margin-top: 1rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 1.2rem;
+    gap: 0.95rem;
     align-items: center;
   }
 
@@ -179,11 +226,58 @@
   }
 
   .recipes-index-empty {
-    max-width: 900px;
     margin: 0 auto;
     font-size: 0.72rem;
     line-height: 1.9;
     color: var(--shakr-text-muted);
     letter-spacing: 0.05em;
+  }
+
+  .recipes-index-create-voice {
+    width: 100%;
+    text-align: center;
+  }
+
+  @media (min-width: 48rem) {
+    .recipes-index-header {
+      margin-bottom: 2rem;
+      gap: 1rem 1.25rem;
+    }
+
+    .recipes-index-header h1 {
+      font-size: 1.85rem;
+    }
+
+    .recipes-index-header-actions {
+      gap: 0.85rem 1rem;
+    }
+
+    .recipes-index-create-voice {
+      width: auto;
+    }
+
+    .recipes-index-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .recipes-index-card {
+      padding: 1.35rem 1.45rem 1.3rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .recipes-index-header h1 {
+      font-size: 2rem;
+    }
+
+    .recipes-index-list {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .recipes-index-card {
+      padding: 1.6rem 1.7rem 1.5rem;
+    }
   }
 }

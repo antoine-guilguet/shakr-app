@@ -1,7 +1,7 @@
 <nav class="navbar">
   <div class="navbar-left">
     <% if user_signed_in? %>
-      <%= link_to recipes_path, class: "navbar-logo" do %>
+      <%= link_to voice_path, class: "navbar-logo" do %>
         Sha<span>k</span>r
       <% end %>
     <% else %>
@@ -9,15 +9,7 @@
         Sha<span>k</span>r
       <% end %>
     <% end %>
-    <div class="navbar-tagline">AI Cocktail Companion</div>
   </div>
-
-  <% if user_signed_in? %>
-    <nav class="navbar-nav" aria-label="App">
-      <%= link_to "Recipes", recipes_path, class: "navbar-nav-link" %>
-      <%= link_to "Voice", voice_path, class: "navbar-nav-link" %>
-    </nav>
-  <% end %>
 
   <div class="navbar-right">
     <% if user_signed_in? %>
@@ -33,6 +25,7 @@
           </span>
         </summary>
         <div class="navbar-user-dropdown">
+          <%= link_to "Recipes", recipes_path, class: "navbar-dropdown-item" %>
           <%= link_to "Edit profile", edit_user_registration_path, class: "navbar-dropdown-item" %>
           <%= link_to "Log out",
                       destroy_user_session_path,

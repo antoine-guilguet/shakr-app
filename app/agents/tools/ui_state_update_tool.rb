@@ -106,9 +106,27 @@ module Tools
         description: recipe["description"].to_s,
         badge: recipe["badge"].to_s.presence,
         url: recipe["url"].to_s.presence,
-        ingredients: Array(recipe["ingredients"]).map(&:to_s).map(&:strip).reject(&:blank?),
+        ingredients: normalize_ingredients(recipe["ingredients"]),
         steps_preview: Array(recipe["steps_preview"]).map(&:to_s).map(&:strip).reject(&:blank?)
       }
+    end
+
+    def normalize_ingredients(ingredients)
+      Array(ingredients).filter_map do |item|
+        if item.is_a?(Hash)
+          name = item["name"].to_s.strip.presence || item[:name].to_s.strip.presence
+          quantity = item["quantity"].presence || item[:quantity].presence
+          unit = item["unit"].to_s.strip.presence || item[:unit].to_s.strip.presence
+
+          next if name.blank?
+
+          parts = [quantity, unit, name].compact.map(&:to_s).map(&:strip).reject(&:blank?)
+          next parts.join(" ") if parts.any?
+        end
+
+        text = item.to_s.strip
+        text.presence
+      end
     end
   end
 end

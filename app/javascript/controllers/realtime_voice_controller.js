@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["button", "status", "transcript"]
+  static targets = ["button", "status", "summarySection", "summary", "recipeSection", "recipe", "actionsSection", "actions"]
   static values = {
     sessionUrl: String
   }
@@ -12,12 +12,15 @@ export default class extends Controller {
     this.dataChannel = null
     this.audioEl = null
     this.active = false
-    this.drafts = new Map()
     this.functionArgDeltas = new Map()
     this.handledCallIds = new Set()
-    this.currentDraftRecipe = null
-    this.currentDraftRecipeId = null
+    this.uiState = {
+      summary: null,
+      recipe: null,
+      actions: []
+    }
     this.setUiIdle()
+    this.renderUiState()
   }
 
   disconnect() {
@@ -48,7 +51,7 @@ export default class extends Controller {
       this.buttonTarget.disabled = false
       this.buttonTarget.textContent = "End voice"
     }
-    if (this.hasStatusTarget) this.statusTarget.textContent = "Listening… speak naturally."
+    if (this.hasStatusTarget) this.statusTarget.textContent = "Listening..."
   }
 
   setUiError(message) {
@@ -62,56 +65,6 @@ export default class extends Controller {
 
   csrfToken() {
     return document.querySelector('meta[name="csrf-token"]')?.getAttribute("content")
-  }
-
-  ensureDraft(key, role) {
-    if (!this.hasTranscriptTarget) return null
-    if (this.drafts.has(key)) return this.drafts.get(key)
-
-    const row = document.createElement("div")
-    row.className = `voice-msg voice-msg--${role} voice-msg--draft`
-    row.dataset.draftKey = key
-
-    const who = document.createElement("div")
-    who.className = "voice-msg__who"
-    who.textContent = role === "user" ? "You" : "Shakr"
-
-    const body = document.createElement("div")
-    body.className = "voice-msg__body"
-    body.textContent = ""
-
-    row.appendChild(who)
-    row.appendChild(body)
-    this.transcriptTarget.appendChild(row)
-    this.drafts.set(key, row)
-    this.scrollTranscriptToBottom()
-    return row
-  }
-
-  appendDraftText(key, role, delta) {
-    if (!delta) return
-    const row = this.ensureDraft(key, role)
-    if (!row) return
-    const body = row.querySelector(".voice-msg__body")
-    body.textContent += delta
-    this.scrollTranscriptToBottom()
-  }
-
-  finalizeDraft(key, finalText) {
-    const row = this.drafts.get(key)
-    if (!row) return
-    const body = row.querySelector(".voice-msg__body")
-    if (typeof finalText === "string" && finalText.length > 0) {
-      body.textContent = finalText
-    }
-    row.classList.remove("voice-msg--draft")
-    this.drafts.delete(key)
-    this.scrollTranscriptToBottom()
-  }
-
-  scrollTranscriptToBottom() {
-    if (!this.hasTranscriptTarget) return
-    this.transcriptTarget.scrollTop = this.transcriptTarget.scrollHeight
   }
 
   sendRealtimeEvent(payload) {
@@ -160,16 +113,38 @@ export default class extends Controller {
       result = { error: e?.message || "Tool request failed." }
     }
 
+    if (name === "ui_state_update" && result?.ok) {
+      this.applyUiStateUpdate(result)
+    }
+
     if (name === "recipes_search" && result?.found && result?.recipe) {
-      this.appendRecipeCard(result.recipe)
+      this.applyUiStateUpdate({
+        recipe: {
+          name: result.recipe.name,
+          description: result.recipe.description,
+          badge: result.recipe.is_public ? "Public" : "Private",
+          url: result.recipe.url,
+          ingredients: [],
+          steps_preview: []
+        }
+      })
     }
 
     if (name === "create_ai_recipe" && result?.ok && result?.recipe) {
-      this.currentDraftRecipe = result.recipe
-      this.currentDraftRecipeId =
-        (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function" && globalThis.crypto.randomUUID()) ||
-        `draft_${Date.now()}_${Math.random().toString(16).slice(2)}`
-      this.appendAiRecipeCard(result.recipe, { draftId: this.currentDraftRecipeId })
+      this.applyUiStateUpdate({
+        recipe: {
+          name: result.recipe.name,
+          description: result.recipe.description,
+          badge: "Draft",
+          ingredients: Array(result.recipe.ingredients).map((ing) => {
+            const qty = ing?.quantity ? `${ing.quantity}` : ""
+            const unit = ing?.unit ? `${ing.unit}` : ""
+            const ingName = ing?.name ? `${ing.name}` : ""
+            return [qty, unit, ingName].filter(Boolean).join(" ").trim()
+          }).filter(Boolean),
+          steps_preview: Array(result.recipe.steps).slice(0, 2).map((step) => step.toString())
+        }
+      })
     }
 
     this.sendRealtimeEvent({
@@ -184,122 +159,151 @@ export default class extends Controller {
     this.sendRealtimeEvent({ type: "response.create" })
   }
 
-  appendRecipeCard(recipe) {
-    if (!this.hasTranscriptTarget || !recipe) return
-
-    const row = document.createElement("div")
-    row.className = "voice-msg voice-msg--tool"
-
-    const who = document.createElement("div")
-    who.className = "voice-msg__who"
-    who.textContent = "Shakr"
-
-    const body = document.createElement("div")
-    body.className = "voice-msg__body"
-
-    const title = document.createElement("div")
-    title.className = "voice-recipe-card__title"
-
-    const link = document.createElement("a")
-    link.href = recipe.url || "#"
-    link.textContent = recipe.name || "Recipe"
-    link.className = "voice-recipe-card__link"
-
-    const badge = document.createElement("span")
-    badge.className = `voice-recipe-card__badge ${recipe.is_public ? "voice-recipe-card__badge--public" : "voice-recipe-card__badge--private"}`
-    badge.textContent = recipe.is_public ? "Public" : "Private"
-
-    title.appendChild(link)
-    title.appendChild(badge)
-
-    const desc = document.createElement("div")
-    desc.className = "voice-recipe-card__desc"
-    desc.textContent = (recipe.description || "").toString()
-
-    body.appendChild(title)
-    if (desc.textContent.length > 0) body.appendChild(desc)
-
-    row.appendChild(who)
-    row.appendChild(body)
-    this.transcriptTarget.appendChild(row)
-    this.scrollTranscriptToBottom()
+  applyUiStateUpdate(payload) {
+    if (typeof payload.summary === "string") this.uiState.summary = payload.summary
+    if (Array.isArray(payload.actions)) this.uiState.actions = payload.actions
+    if (Object.prototype.hasOwnProperty.call(payload, "recipe")) this.uiState.recipe = payload.recipe
+    this.renderUiState()
   }
 
-  appendAiRecipeCard(recipe, { draftId } = {}) {
-    if (!this.hasTranscriptTarget || !recipe) return
+  renderUiState() {
+    this.renderSummary()
+    this.renderRecipe()
+    this.renderActions()
+  }
 
-    const row = document.createElement("div")
-    row.className = "voice-msg voice-msg--tool"
-    if (draftId) row.dataset.draftId = draftId
+  renderSummary() {
+    const summary = this.uiState.summary?.toString().trim()
+    const hasSummary = Boolean(summary)
+    if (this.hasSummaryTarget) this.summaryTarget.textContent = hasSummary ? summary : ""
+    if (this.hasSummarySectionTarget) this.summarySectionTarget.hidden = !hasSummary
+  }
 
-    const who = document.createElement("div")
-    who.className = "voice-msg__who"
-    who.textContent = "Shakr"
+  renderRecipe() {
+    if (!this.hasRecipeTarget) return
+    const recipe = this.uiState.recipe
+    this.recipeTarget.innerHTML = ""
 
-    const body = document.createElement("div")
-    body.className = "voice-msg__body"
+    if (!recipe || !recipe.name) {
+      if (this.hasRecipeSectionTarget) this.recipeSectionTarget.hidden = true
+      return
+    }
+
+    if (this.hasRecipeSectionTarget) this.recipeSectionTarget.hidden = false
+
+    const card = document.createElement("div")
+    card.className = "voice-recipe-card"
 
     const title = document.createElement("div")
     title.className = "voice-recipe-card__title"
 
-    const name = document.createElement("div")
-    name.className = "voice-recipe-card__name"
-    name.textContent = recipe.name || "Draft recipe"
+    if (recipe.url) {
+      const link = document.createElement("a")
+      link.href = recipe.url
+      link.className = "voice-recipe-card__link"
+      link.textContent = recipe.name || "Recipe"
+      title.appendChild(link)
+    } else {
+      const name = document.createElement("div")
+      name.className = "voice-recipe-card__name"
+      name.textContent = recipe.name || "Recipe"
+      title.appendChild(name)
+    }
 
-    const badge = document.createElement("span")
-    badge.className = "voice-recipe-card__badge voice-recipe-card__badge--draft"
-    badge.textContent = "Draft"
+    if (recipe.badge) {
+      const badge = document.createElement("span")
+      badge.className = "voice-recipe-card__badge"
+      badge.textContent = recipe.badge
+      title.appendChild(badge)
+    }
 
-    title.appendChild(name)
-    title.appendChild(badge)
+    card.appendChild(title)
 
-    const desc = document.createElement("div")
-    desc.className = "voice-recipe-card__desc"
-    desc.textContent = (recipe.description || "").toString()
+    if (recipe.description) {
+      const desc = document.createElement("div")
+      desc.className = "voice-recipe-card__desc"
+      desc.textContent = recipe.description.toString()
+      card.appendChild(desc)
+    }
 
     const ingredients = Array.isArray(recipe.ingredients) ? recipe.ingredients : []
-    const steps = Array.isArray(recipe.steps) ? recipe.steps : []
+    if (ingredients.length > 0) {
+      const section = document.createElement("div")
+      section.className = "voice-recipe-card__section"
+      section.textContent = "Ingredients"
+      card.appendChild(section)
 
-    const ingList = document.createElement("ul")
-    ingList.className = "voice-recipe-card__list"
-    for (const ing of ingredients) {
-      const li = document.createElement("li")
-      const qty = ing?.quantity ? `${ing.quantity}` : ""
-      const unit = ing?.unit ? `${ing.unit}` : ""
-      const ingName = ing?.name ? `${ing.name}` : ""
-      li.textContent = [qty, unit, ingName].filter(Boolean).join(" ").trim()
-      if (li.textContent.length > 0) ingList.appendChild(li)
+      const list = document.createElement("ul")
+      list.className = "voice-recipe-card__list"
+      ingredients.forEach((ing) => {
+        const li = document.createElement("li")
+        li.textContent = ing.toString()
+        list.appendChild(li)
+      })
+      card.appendChild(list)
     }
 
-    const stepsList = document.createElement("ol")
-    stepsList.className = "voice-recipe-card__list voice-recipe-card__steps"
-    steps.slice(0, 2).forEach((s) => {
-      const li = document.createElement("li")
-      li.textContent = s.toString()
-      stepsList.appendChild(li)
+    const steps = Array.isArray(recipe.steps_preview) ? recipe.steps_preview : []
+    if (steps.length > 0) {
+      const section = document.createElement("div")
+      section.className = "voice-recipe-card__section"
+      section.textContent = "Steps (preview)"
+      card.appendChild(section)
+
+      const list = document.createElement("ol")
+      list.className = "voice-recipe-card__list voice-recipe-card__steps"
+      steps.forEach((step) => {
+        const li = document.createElement("li")
+        li.textContent = step.toString()
+        list.appendChild(li)
+      })
+      card.appendChild(list)
+    }
+
+    this.recipeTarget.appendChild(card)
+  }
+
+  renderActions() {
+    if (!this.hasActionsTarget) return
+    this.actionsTarget.innerHTML = ""
+    const actions = Array.isArray(this.uiState.actions) ? this.uiState.actions : []
+    const validActions = actions.filter((action) => action?.label && action?.utterance)
+
+    if (this.hasActionsSectionTarget) this.actionsSectionTarget.hidden = validActions.length === 0
+    validActions.forEach((action) => {
+      const button = document.createElement("button")
+      button.type = "button"
+      button.className = "voice-ui-action"
+      button.dataset.action = "click->realtime-voice#runSuggestedAction"
+      button.dataset.utterance = action.utterance.toString()
+      button.textContent = action.label.toString()
+      this.actionsTarget.appendChild(button)
+    })
+  }
+
+  runSuggestedAction(event) {
+    event.preventDefault()
+    const utterance = event.currentTarget?.dataset?.utterance
+    if (!utterance) return
+    this.sendUserText(utterance)
+  }
+
+  sendUserText(text) {
+    const utterance = text.toString().trim()
+    if (!utterance) return
+
+    const ok = this.sendRealtimeEvent({
+      type: "conversation.item.create",
+      item: {
+        type: "message",
+        role: "user",
+        content: [{ type: "input_text", text: utterance }]
+      }
     })
 
-    body.appendChild(title)
-    if (desc.textContent.length > 0) body.appendChild(desc)
-    if (ingList.childElementCount > 0) {
-      const h = document.createElement("div")
-      h.className = "voice-recipe-card__section"
-      h.textContent = "Ingredients"
-      body.appendChild(h)
-      body.appendChild(ingList)
-    }
-    if (stepsList.childElementCount > 0) {
-      const h = document.createElement("div")
-      h.className = "voice-recipe-card__section"
-      h.textContent = "Steps (preview)"
-      body.appendChild(h)
-      body.appendChild(stepsList)
-    }
-
-    row.appendChild(who)
-    row.appendChild(body)
-    this.transcriptTarget.appendChild(row)
-    this.scrollTranscriptToBottom()
+    if (!ok) return
+    this.sendRealtimeEvent({ type: "response.create" })
+    if (this.hasStatusTarget) this.statusTarget.textContent = "Thinking..."
   }
 
   async startSession() {
@@ -362,39 +366,13 @@ export default class extends Controller {
     this.dataChannel.addEventListener("message", (e) => {
       try {
         const event = JSON.parse(e.data)
-        if (event.type === "conversation.item.input_audio_transcription.delta") {
-          const key = `user:${event.item_id || "unknown"}`
-          this.appendDraftText(key, "user", event.delta)
-          return
-        }
-
-        if (event.type === "conversation.item.input_audio_transcription.completed") {
-          const key = `user:${event.item_id || "unknown"}`
-          this.finalizeDraft(key, event.transcript)
-          return
-        }
-
-        if (event.type === "response.text.delta") {
-          const key = `assistant:${event.response_id || "current"}`
-          this.appendDraftText(key, "assistant", event.delta)
-          return
-        }
-
-        if (event.type === "response.output_audio_transcript.delta") {
-          const key = `assistant:${event.response_id || "current"}`
-          this.appendDraftText(key, "assistant", event.delta)
-          return
-        }
-
-        if (event.type === "response.output_audio_transcript.done") {
-          const key = `assistant:${event.response_id || "current"}`
-          this.finalizeDraft(key, event.transcript)
+        if (event.type === "response.created") {
+          if (this.hasStatusTarget) this.statusTarget.textContent = "Thinking..."
           return
         }
 
         if (event.type === "response.completed") {
-          const key = `assistant:${event.response_id || "current"}`
-          this.finalizeDraft(key)
+          if (this.hasStatusTarget) this.statusTarget.textContent = "Listening..."
           return
         }
 
@@ -484,7 +462,6 @@ export default class extends Controller {
   }
 
   cleanupPeer() {
-    this.drafts?.clear?.()
     this.functionArgDeltas?.clear?.()
     this.handledCallIds?.clear?.()
 

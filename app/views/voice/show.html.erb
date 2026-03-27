@@ -1,20 +1,29 @@
 <% content_for :title, "Voice — Shakr" %>
 
 <div class="voice-lab">
-  <header class="voice-lab-header">
-    <h1 class="voice-lab-title">Voice assistant</h1>
-    <p class="voice-lab-lede">
-      Test the OpenAI Realtime connection: allow the microphone, then speak. The model replies over WebRTC.
-    </p>
-  </header>
-
   <section
     class="voice-lab-panel"
     data-controller="realtime-voice"
     data-realtime-voice-session-url-value="<%= realtime_sessions_path %>"
     aria-label="Realtime voice session"
   >
-    <div class="voice-lab-transcript" data-realtime-voice-target="transcript" aria-live="polite" aria-label="Conversation transcript"></div>
+    <div class="voice-ui" aria-live="polite">
+      <section class="voice-ui-section" data-realtime-voice-target="summarySection">
+        <h2 class="voice-ui-section__title">What I understood</h2>
+        <p class="voice-ui-summary" data-realtime-voice-target="summary"></p>
+      </section>
+
+      <section class="voice-ui-section" data-realtime-voice-target="recipeSection">
+        <h2 class="voice-ui-section__title">Suggested recipe</h2>
+        <div class="voice-ui-recipe" data-realtime-voice-target="recipe"></div>
+      </section>
+
+      <section class="voice-ui-section" data-realtime-voice-target="actionsSection">
+        <h2 class="voice-ui-section__title">Suggested actions</h2>
+        <div class="voice-ui-actions" data-realtime-voice-target="actions"></div>
+      </section>
+    </div>
+
     <button
       type="button"
       class="btn-secondary voice-lab-button"
@@ -24,9 +33,6 @@
       Talk to Shakr
     </button>
     <p class="voice-lab-status" data-realtime-voice-target="status" role="status"></p>
-    <p class="voice-lab-hint">
-      Open the browser devtools console to inspect <code class="voice-lab-code">oai-events</code> payloads while debugging.
-    </p>
   </section>
 
   <p class="voice-lab-back">

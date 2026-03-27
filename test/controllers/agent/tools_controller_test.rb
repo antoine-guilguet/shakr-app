@@ -160,5 +160,24 @@ class Agent::ToolsControllerTest < ActionDispatch::IntegrationTest
     assert_equal false, body["ok"]
     assert_equal "AI down", body["error"]
   end
+
+  test "ui_state_update returns summary and actions payload" do
+    post agent_tool_path(name: "ui_state_update"),
+      params: {
+        summary: "You asked for a low sugar sour.",
+        actions: [
+          { id: "make_one", label: "Suggest one", utterance: "Suggest one" }
+        ],
+        recipe: nil
+      },
+      as: :json
+
+    assert_response :success
+    body = response.parsed_body
+    assert_equal true, body["ok"]
+    assert_equal "You asked for a low sugar sour.", body["summary"]
+    assert_equal 1, Array(body["actions"]).length
+    assert_nil body["recipe"]
+  end
 end
 

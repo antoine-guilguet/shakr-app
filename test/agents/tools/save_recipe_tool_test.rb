@@ -55,5 +55,6 @@ class SaveRecipeToolTest < ActionDispatch::IntegrationTest
   test "tool registry exposes save_recipe definition" do
     names = ToolRegistry.default.definitions_for_openai.map { |d| d[:name] }
     assert_includes names, "save_recipe"
+    assert_includes names, "ui_state_update"
   end
 end

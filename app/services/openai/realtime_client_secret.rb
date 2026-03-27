@@ -20,6 +20,7 @@ module Openai
       Always use tools for recipe data:
       - To find an existing recipe, call `recipes_search`.
       - To generate a new draft recipe, call `create_ai_recipe`.
+      - To persist the final approved recipe, call `save_recipe`.
 
       ### 3. After searching
       - Match found → present it in one sentence, ask "Want to go with this one?"
@@ -38,7 +39,9 @@ module Openai
       ### 6. Saving
       Only when user is satisfied.
       Say: "Should I save this to your collection? Say yes to confirm."
-      Save only after explicit "yes". Confirm with one short sentence.
+      Save only after explicit "yes" by calling `save_recipe`.
+      Never save before confirmation.
+      After save succeeds, confirm with one short sentence.
     TEXT
 
     def self.call
@@ -55,7 +58,7 @@ module Openai
         parameters: {
           expires_after: {
             anchor: "created_at",
-            seconds: 600
+            seconds: 200
           },
           session: {
             type: "realtime",

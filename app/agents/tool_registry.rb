@@ -19,6 +19,7 @@ class ToolRegistry
     new.tap do |r|
       r.register(Tools::RecipesSearchTool.new)
       r.register(Tools::CreateAiRecipeTool.new)
+      r.register(Tools::SaveRecipeTool.new)
     end
   end
 end

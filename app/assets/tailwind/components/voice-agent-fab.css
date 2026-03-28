@@ -41,7 +41,7 @@
 
   .recipes-index--voice-fab,
   .recipes-show--voice-fab {
-    padding-bottom: max(5.5rem, calc(4.5rem + env(safe-area-inset-bottom)));
+    padding-bottom: max(6.5rem, calc(5.5rem + env(safe-area-inset-bottom)));
   }
 
   .voice-lab--voice-fab {

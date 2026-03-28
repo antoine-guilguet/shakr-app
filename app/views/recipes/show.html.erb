@@ -34,59 +34,64 @@
       <% end %>
     </div>
 
-    <div class="ai-recipe-body">
-      <div class="ai-recipe-section">
-        <h3 class="ai-recipe-section-title">Ingredients</h3>
+    <div class="ai-recipe-body ai-recipe-body--desktop">
+      <%= render "show_ingredients_section", recipe: @recipe %>
+      <%= render "show_method_section", recipe: @recipe %>
+    </div>
 
-        <% lines = @recipe.recipe_ingredients.includes(:ingredient) %>
-        <% if lines.any? %>
-          <ul class="ai-recipe-ingredients">
-            <% lines.each do |line| %>
-              <li class="ai-recipe-ingredient">
-                <span class="ai-recipe-ingredient-qty">
-                  <%= [line.amount, line.unit].compact.join(" ") %>
-                </span>
-                <span class="ai-recipe-ingredient-name"><%= line.ingredient.name %></span>
-              </li>
-            <% end %>
-          </ul>
-        <% else %>
-          <p class="ai-recipe-empty">No ingredients.</p>
-        <% end %>
-
-        <div class="recipes-ai-meta">
-          <% if @recipe.glassware.present? %>
-            <div class="recipes-ai-meta-item">
-              <span class="recipes-ai-meta-label">Glassware</span>
-              <span class="recipes-ai-meta-value"><%= @recipe.glassware %></span>
+    <div
+      class="ai-recipe-body ai-recipe-body--mobile-slider"
+      data-controller="recipe-detail-slider"
+    >
+      <div class="voice-recipe-card voice-recipe-card--fancy recipe-show-slider-card">
+        <div class="voice-recipe-card__slider">
+          <div
+            class="voice-recipe-card__track"
+            data-recipe-detail-slider-target="track"
+          >
+            <div class="voice-recipe-card__slide">
+              <div class="voice-recipe-card__slide-inner">
+                <%= render "show_ingredients_section",
+                           recipe: @recipe,
+                           section_class: "ai-recipe-section ai-recipe-section--in-slider" %>
+              </div>
             </div>
-          <% end %>
-
-          <% if @recipe.garnish.present? %>
-            <div class="recipes-ai-meta-item">
-              <span class="recipes-ai-meta-label">Garnish</span>
-              <span class="recipes-ai-meta-value"><%= @recipe.garnish %></span>
+            <div class="voice-recipe-card__slide">
+              <div class="voice-recipe-card__slide-inner">
+                <%= render "show_method_section",
+                           recipe: @recipe,
+                           section_class: "ai-recipe-section ai-recipe-section--in-slider" %>
+              </div>
             </div>
-          <% end %>
+          </div>
         </div>
-      </div>
-
-      <div class="ai-recipe-section">
-        <h3 class="ai-recipe-section-title">Method</h3>
-
-        <% steps = Array(@recipe.steps) %>
-        <% if steps.any? %>
-          <ol class="ai-recipe-steps ai-recipe-steps--numbered">
-            <% steps.each_with_index do |step, idx| %>
-              <li class="ai-recipe-step">
-                <span class="ai-recipe-step-num"><%= idx + 1 %>.</span>
-                <span class="ai-recipe-step-text"><%= step %></span>
-              </li>
-            <% end %>
-          </ol>
-        <% else %>
-          <p class="ai-recipe-empty">No steps.</p>
-        <% end %>
+        <div class="voice-recipe-card__slider-controls">
+          <button
+            type="button"
+            class="voice-recipe-card__slider-btn"
+            data-recipe-detail-slider-target="prevButton"
+            data-action="click->recipe-detail-slider#prev"
+            aria-label="Previous section"
+          >
+            Prev
+          </button>
+          <span
+            class="voice-recipe-card__slider-indicator"
+            data-recipe-detail-slider-target="indicator"
+            aria-live="polite"
+          >
+            1 / 2
+          </span>
+          <button
+            type="button"
+            class="voice-recipe-card__slider-btn"
+            data-recipe-detail-slider-target="nextButton"
+            data-action="click->recipe-detail-slider#next"
+            aria-label="Next section"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   </div>

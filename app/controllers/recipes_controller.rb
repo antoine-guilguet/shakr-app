@@ -62,7 +62,7 @@ class RecipesController < ApplicationController
   private
 
   def set_recipe_for_show
-    @recipe = Recipe.find_by(id: params[:id])
+    @recipe = Recipe.includes(recipe_ingredients: :ingredient).find_by(id: params[:id])
     unless @recipe
       redirect_to root_path, alert: "Recipe not found."
       return

@@ -1,6 +1,6 @@
 <div class="recipes-index<%= " recipes-index--voice-fab" if user_signed_in? %>">
   <div class="recipes-index-header">
-    <h1>Your Bar</h1>
+    <h1>Cocktails</h1>
     <div class="recipes-index-header-actions">
       <% if !mobile_device? %>
         <%= link_to "Create recipe", new_recipe_path, class: "btn-primary" %>
@@ -22,13 +22,6 @@
                     "aria-label": "View #{recipe_label}" do %>
           <div class="recipes-index-card-top">
             <h2 class="recipes-index-title"><%= recipe_label %></h2>
-            <div class="recipes-index-badges">
-              <% if recipe.is_public? %>
-                <span class="recipes-index-visibility recipes-index-visibility--public">Public</span>
-              <% else %>
-                <span class="recipes-index-visibility recipes-index-visibility--private">Private</span>
-              <% end %>
-            </div>
           </div>
 
           <% if recipe.description.present? %>

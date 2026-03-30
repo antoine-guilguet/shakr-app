@@ -20,6 +20,7 @@ class ToolRegistry
       r.register(Tools::RecipesSearchTool.new)
       r.register(Tools::CreateAiRecipeTool.new)
       r.register(Tools::SaveRecipeTool.new)
+      r.register(Tools::UpdateRecipeTool.new)
       r.register(Tools::UiStateUpdateTool.new)
     end
   end

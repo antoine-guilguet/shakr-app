@@ -29,6 +29,7 @@ class Openai::RealtimeClientSecretTest < ActiveSupport::TestCase
     tool_names = tools.map { |tool| tool[:name] }
 
     assert_includes tool_names, "ui_state_update"
+    assert_includes tool_names, "update_recipe"
   ensure
     ENV["OPENAI_API_KEY"] = original_api_key
     OpenAI::Client.define_singleton_method(:new) do |**kwargs|

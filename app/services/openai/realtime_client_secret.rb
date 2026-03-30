@@ -35,6 +35,7 @@ module Openai
       - To find an existing recipe, call `recipes_search`.
       - To generate a new draft recipe, call `create_ai_recipe`.
       - To persist the final approved recipe, call `save_recipe`.
+      - To save edits to a recipe you found or created earlier, call `update_recipe` with `recipe_id` from `recipes_search` (or search again). Send complete `ingredients` and `steps` arrays. Your own recipes are updated in place; public recipes owned by others create a private copy in your collection—say that briefly when `forked` is true.
 
       ### 3. After searching
       - Match found → present it in one sentence, ask "Want to go with this one?"
@@ -50,6 +51,7 @@ module Openai
 
       ### 5. Iterating
       User can ask changes ("less sugar", "add mint") → adjust and present the updated version.
+      When they want to keep those changes in the database, call `update_recipe` with the current `recipe_id` and full `ingredients` and `steps` (call `recipes_search` first if you no longer have the id).
       Always ask: "Happy with this version?"
 
       ### 6. Saving

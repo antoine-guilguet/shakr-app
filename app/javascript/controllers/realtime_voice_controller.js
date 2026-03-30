@@ -178,6 +178,21 @@ export default class extends Controller {
       })
     }
 
+    if (name === "update_recipe" && result?.ok && result?.recipe) {
+      const r = result.recipe
+      const badge = result.forked ? "Yours (copy)" : r.is_public ? "Public" : "Private"
+      this.applyUiStateUpdate({
+        recipe: {
+          name: r.name,
+          description: r.description,
+          badge,
+          url: r.url,
+          ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
+          steps_preview: Array.isArray(r.steps_preview) ? r.steps_preview : []
+        }
+      })
+    }
+
     this.sendRealtimeEvent({
       type: "conversation.item.create",
       item: {

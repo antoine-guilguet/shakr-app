@@ -13,6 +13,11 @@ module Recipes
       new(user:, input:).call
     end
 
+    # Used by UpdateOrForkFromAgent to validate merged input without persisting.
+    def self.attributes_from_input(input)
+      new(user: nil, input: input).send(:normalize_attributes)
+    end
+
     def initialize(user:, input:)
       @user = user
       @input = input.to_h

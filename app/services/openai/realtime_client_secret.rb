@@ -17,7 +17,9 @@ module Openai
       Use `ui_state_update` to mirror your current state in the UI.
       Keep it concise and aligned with what you just said out loud:
       - `summary`: one short sentence summarising the user's request.
-      - `actions`: 2 to 3 suggested next actions with label and short utterance.
+      - `actions`: 1 to 2 suggested next actions, optimized for quick scanning.
+        - Label: 1–3 words, verb-first (e.g., "Find recipe", "Make one", "Adjust", "Save")
+        - Utterance: 2–6 words, no filler, no punctuation, no quotes (e.g., "pisco sour", "something smoky", "less sweet", "save it")
       - `recipe`: only when proposing or refining a recipe; otherwise set `recipe` to null
       Prefer meaningful state updates (start, clarify, suggest recipe, confirm save, saved) instead of noisy updates every small step.
 
@@ -66,7 +68,7 @@ module Openai
       Then `ui_state_update` with `recipe` populated.
 
       #### Iterating (adjusting a recipe)
-      - Apply requested changes and present the updated version (spoken).
+      - Apply requested changes and summarise the changes applied in one short sentence.
       - Always ask: "Happy with this version?"
       - If the user wants the changes saved to the database, call `update_recipe` with the current `recipe_id` and full `ingredients` + `steps`
         - If you no longer have the id, call `recipes_search` again.

@@ -1,7 +1,28 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["button", "status", "summarySection", "summary", "recipeSection", "recipe", "actionsSection", "actions"]
+  static targets = [
+    "button",
+    "status",
+    "summarySection",
+    "summary",
+    "recipeSection",
+    "recipeCard",
+    "recipeTrack",
+    "recipePrevBtn",
+    "recipeNextBtn",
+    "recipeIndicator",
+    "recipeName",
+    "recipeLink",
+    "recipeBadge",
+    "recipeDescription",
+    "recipeIngredients",
+    "recipeIngredientsHint",
+    "recipeSteps",
+    "recipeStepsHint",
+    "actionsSection",
+    "actions"
+  ]
   static values = {
     sessionUrl: String,
     autostart: { type: Boolean, default: false }
@@ -22,7 +43,6 @@ export default class extends Controller {
       actions: []
     }
     this.currentRecipeSlideIndex = 0
-    this.recipeSliderRefs = null
     this.setUiIdle()
     this.renderUiState()
     if (this.autostartValue) {
@@ -226,10 +246,7 @@ export default class extends Controller {
   }
 
   renderRecipe() {
-    if (!this.hasRecipeTarget) return
     const recipe = this.uiState.recipe
-    this.recipeTarget.innerHTML = ""
-    this.recipeSliderRefs = null
     this.currentRecipeSlideIndex = 0
 
     if (!recipe || !recipe.name) {
@@ -238,157 +255,70 @@ export default class extends Controller {
     }
 
     if (this.hasRecipeSectionTarget) this.recipeSectionTarget.hidden = false
-
-    const card = this.buildRecipeSliderCard(recipe)
-    this.recipeTarget.appendChild(card)
+    this.fillRecipeCard(recipe)
     this.updateRecipeSliderUi()
   }
 
-  buildRecipeSliderCard(recipe) {
-    const card = document.createElement("div")
-    card.className = "voice-recipe-card voice-recipe-card--fancy"
+  fillRecipeCard(recipe) {
+    if (this.hasRecipeCardTarget) this.recipeCardTarget.hidden = false
 
-    const slider = document.createElement("div")
-    slider.className = "voice-recipe-card__slider"
+    const nameText = recipe?.name ? recipe.name.toString() : "Recipe"
+    const badgeText = recipe?.badge ? recipe.badge.toString().trim() : ""
+    const descText = recipe?.description ? recipe.description.toString().trim() : ""
+    const urlText = recipe?.url ? recipe.url.toString().trim() : ""
 
-    const track = document.createElement("div")
-    track.className = "voice-recipe-card__track"
-    track.setAttribute("role", "region")
-    track.setAttribute("aria-label", "Recipe details")
-
-    const slideOverview = document.createElement("div")
-    slideOverview.className = "voice-recipe-card__slide voice-recipe-card__slide--overview"
-    slideOverview.appendChild(this.buildRecipeOverviewContent(recipe))
-
-    const slideSteps = document.createElement("div")
-    slideSteps.className = "voice-recipe-card__slide voice-recipe-card__slide--steps"
-    slideSteps.appendChild(this.buildRecipeStepsContent(recipe))
-
-    track.appendChild(slideOverview)
-    track.appendChild(slideSteps)
-    slider.appendChild(track)
-
-    const controls = document.createElement("div")
-    controls.className = "voice-recipe-card__slider-controls"
-
-    const prevBtn = document.createElement("button")
-    prevBtn.type = "button"
-    prevBtn.className = "voice-recipe-card__slider-btn"
-    prevBtn.setAttribute("aria-label", "Previous slide")
-    prevBtn.textContent = "Prev"
-    prevBtn.dataset.action = "click->realtime-voice#prevRecipeSlide"
-
-    const indicator = document.createElement("span")
-    indicator.className = "voice-recipe-card__slider-indicator"
-    indicator.setAttribute("aria-live", "polite")
-
-    const nextBtn = document.createElement("button")
-    nextBtn.type = "button"
-    nextBtn.className = "voice-recipe-card__slider-btn"
-    nextBtn.setAttribute("aria-label", "Next slide")
-    nextBtn.textContent = "Next"
-    nextBtn.dataset.action = "click->realtime-voice#nextRecipeSlide"
-
-    controls.appendChild(prevBtn)
-    controls.appendChild(indicator)
-    controls.appendChild(nextBtn)
-
-    card.appendChild(slider)
-    card.appendChild(controls)
-
-    this.recipeSliderRefs = { track, indicator, prevBtn, nextBtn }
-
-    return card
-  }
-
-  buildRecipeOverviewContent(recipe) {
-    const wrap = document.createElement("div")
-    wrap.className = "voice-recipe-card__slide-inner"
-
-    const title = document.createElement("div")
-    title.className = "voice-recipe-card__title"
-
-    if (recipe.url) {
-      const link = document.createElement("a")
-      link.href = recipe.url
-      link.className = "voice-recipe-card__link"
-      link.textContent = recipe.name || "Recipe"
-      title.appendChild(link)
+    if (urlText) {
+      if (this.hasRecipeLinkTarget) {
+        this.recipeLinkTarget.hidden = false
+        this.recipeLinkTarget.href = urlText
+        this.recipeLinkTarget.textContent = nameText
+      }
+      if (this.hasRecipeNameTarget) this.recipeNameTarget.hidden = true
     } else {
-      const name = document.createElement("div")
-      name.className = "voice-recipe-card__name"
-      name.textContent = recipe.name || "Recipe"
-      title.appendChild(name)
+      if (this.hasRecipeNameTarget) {
+        this.recipeNameTarget.hidden = false
+        this.recipeNameTarget.textContent = nameText
+      }
+      if (this.hasRecipeLinkTarget) this.recipeLinkTarget.hidden = true
     }
 
-    if (recipe.badge) {
-      const badge = document.createElement("span")
-      badge.className = "voice-recipe-card__badge"
-      badge.textContent = recipe.badge
-      title.appendChild(badge)
+    if (this.hasRecipeBadgeTarget) {
+      this.recipeBadgeTarget.hidden = !badgeText
+      this.recipeBadgeTarget.textContent = badgeText
     }
 
-    wrap.appendChild(title)
-
-    if (recipe.description) {
-      const desc = document.createElement("div")
-      desc.className = "voice-recipe-card__desc"
-      desc.textContent = recipe.description.toString()
-      wrap.appendChild(desc)
+    if (this.hasRecipeDescriptionTarget) {
+      this.recipeDescriptionTarget.hidden = !descText
+      this.recipeDescriptionTarget.textContent = descText
     }
 
-    const ingredients = Array.isArray(recipe.ingredients) ? recipe.ingredients : []
-    const section = document.createElement("div")
-    section.className = "voice-recipe-card__section"
-    section.textContent = "Ingredients"
-    wrap.appendChild(section)
-
-    if (ingredients.length > 0) {
-      const list = document.createElement("ul")
-      list.className = "voice-recipe-card__list voice-recipe-card__list--ingredients"
+    const ingredients = Array.isArray(recipe?.ingredients) ? recipe.ingredients : []
+    if (this.hasRecipeIngredientsTarget) {
+      this.recipeIngredientsTarget.innerHTML = ""
       ingredients.forEach((ing) => {
         const li = document.createElement("li")
         li.textContent = ing.toString()
-        list.appendChild(li)
+        this.recipeIngredientsTarget.appendChild(li)
       })
-      wrap.appendChild(list)
-    } else {
-      const hint = document.createElement("p")
-      hint.className = "voice-recipe-card__empty-hint"
-      hint.textContent = "Ingredients will appear here when available — ask aloud for details."
-      wrap.appendChild(hint)
+      this.recipeIngredientsTarget.hidden = ingredients.length === 0
+    }
+    if (this.hasRecipeIngredientsHintTarget) {
+      this.recipeIngredientsHintTarget.hidden = ingredients.length > 0
     }
 
-    return wrap
-  }
-
-  buildRecipeStepsContent(recipe) {
-    const wrap = document.createElement("div")
-    wrap.className = "voice-recipe-card__slide-inner"
-
-    const heading = document.createElement("div")
-    heading.className = "voice-recipe-card__section"
-    heading.textContent = "Guiding steps"
-    wrap.appendChild(heading)
-
-    const steps = Array.isArray(recipe.steps_preview) ? recipe.steps_preview : []
-    if (steps.length > 0) {
-      const list = document.createElement("ol")
-      list.className = "voice-recipe-card__list voice-recipe-card__steps voice-recipe-card__steps--fancy"
+    const steps = Array.isArray(recipe?.steps_preview) ? recipe.steps_preview : []
+    if (this.hasRecipeStepsTarget) {
+      this.recipeStepsTarget.innerHTML = ""
       steps.forEach((step) => {
         const li = document.createElement("li")
         li.textContent = step.toString()
-        list.appendChild(li)
+        this.recipeStepsTarget.appendChild(li)
       })
-      wrap.appendChild(list)
-    } else {
-      const hint = document.createElement("p")
-      hint.className = "voice-recipe-card__empty-hint"
-      hint.textContent = "I can guide you through the steps by voice — use “show the recipe” or ask me to walk through it."
-      wrap.appendChild(hint)
+      this.recipeStepsTarget.hidden = steps.length === 0
     }
-
-    return wrap
+    if (this.hasRecipeStepsHintTarget) {
+      this.recipeStepsHintTarget.hidden = steps.length > 0
+    }
   }
 
   goToRecipeSlide(index) {
@@ -408,10 +338,12 @@ export default class extends Controller {
   }
 
   updateRecipeSliderUi() {
-    const refs = this.recipeSliderRefs
-    if (!refs) return
+    if (!this.hasRecipeTrackTarget || !this.hasRecipeIndicatorTarget || !this.hasRecipePrevBtnTarget || !this.hasRecipeNextBtnTarget) return
 
-    const { track, indicator, prevBtn, nextBtn } = refs
+    const track = this.recipeTrackTarget
+    const indicator = this.recipeIndicatorTarget
+    const prevBtn = this.recipePrevBtnTarget
+    const nextBtn = this.recipeNextBtnTarget
     const pct = this.currentRecipeSlideIndex === 0 ? "0%" : "-50%"
     track.style.transform = `translateX(${pct})`
     indicator.textContent = `${this.currentRecipeSlideIndex + 1} / 2`

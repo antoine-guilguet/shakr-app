@@ -66,10 +66,10 @@ module Recipes
       scoped = Recipe.where(id: @relation.unscope(:order).select(:id))
 
       where_sql = Recipe.sanitize_sql_array(
-        ["similarity(lower(recipes.name::text), lower(?)) > ?", @query, SIMILARITY_THRESHOLD]
+        [ "similarity(lower(recipes.name::text), lower(?)) > ?", @query, SIMILARITY_THRESHOLD ]
       )
       order_sql = Recipe.sanitize_sql_array(
-        ["similarity(lower(recipes.name::text), lower(?)) DESC, recipes.updated_at DESC", @query]
+        [ "similarity(lower(recipes.name::text), lower(?)) DESC, recipes.updated_at DESC", @query ]
       )
 
       scoped

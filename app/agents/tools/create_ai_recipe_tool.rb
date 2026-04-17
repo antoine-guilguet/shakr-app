@@ -16,7 +16,7 @@ module Tools
             description: "User requirements and constraints for the recipe (flavors, spirit, sweetness, allergens, available ingredients, etc.)."
           }
         },
-        required: ["prompt"]
+        required: [ "prompt" ]
       }
     end
 
@@ -49,4 +49,3 @@ module Tools
     end
   end
 end
-

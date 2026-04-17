@@ -25,4 +25,3 @@ class ToolRegistry
     end
   end
 end
-

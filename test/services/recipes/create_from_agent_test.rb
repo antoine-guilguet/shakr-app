@@ -11,8 +11,8 @@ class Recipes::CreateFromAgentTest < ActiveSupport::TestCase
     payload = {
       "name" => "Agent Gimlet",
       "description" => "Bright and tart.",
-      "tags" => ["gin", "citrus"],
-      "steps" => ["Shake with ice.", "Fine strain into a coupe."],
+      "tags" => [ "gin", "citrus" ],
+      "steps" => [ "Shake with ice.", "Fine strain into a coupe." ],
       "ingredients" => [
         { "name" => "Gin", "quantity" => 50, "unit" => "ml" },
         { "name" => "Lime juice", "quantity" => 25, "unit" => "ml" }
@@ -31,14 +31,14 @@ class Recipes::CreateFromAgentTest < ActiveSupport::TestCase
 
     assert_equal "Agent Gimlet", recipe.name
     assert_equal true, recipe.is_public?
-    assert_equal ["gin", "citrus"], recipe.tags
-    assert_equal [0, 1], recipe.recipe_ingredients.order(:position).pluck(:position)
+    assert_equal [ "gin", "citrus" ], recipe.tags
+    assert_equal [ 0, 1 ], recipe.recipe_ingredients.order(:position).pluck(:position)
   end
 
   test "rejects invalid ingredient unit" do
     payload = {
       "name" => "Bad Unit",
-      "steps" => ["Build"],
+      "steps" => [ "Build" ],
       "ingredients" => [
         { "name" => "Gin", "quantity" => 45, "unit" => "liter" }
       ]
@@ -55,7 +55,7 @@ class Recipes::CreateFromAgentTest < ActiveSupport::TestCase
   test "defaults visibility to private when missing" do
     payload = {
       "name" => "Private Default",
-      "steps" => ["Stir"],
+      "steps" => [ "Stir" ],
       "ingredients" => [
         { "name" => "Gin", "quantity" => 45, "unit" => "ml" }
       ]

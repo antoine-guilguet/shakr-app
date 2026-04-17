@@ -24,7 +24,7 @@ class UiStateUpdateToolTest < ActionDispatch::IntegrationTest
             { name: "Gin", quantity: 50, unit: "ml" },
             { "name" => "Lime juice", "quantity" => 25, "unit" => "ml" }
           ],
-          steps_preview: ["Shake with ice", "Fine strain"]
+          steps_preview: [ "Shake with ice", "Fine strain" ]
         }
       },
       as: :json

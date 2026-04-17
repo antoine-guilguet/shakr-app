@@ -20,4 +20,3 @@ module Agent
     end
   end
 end
-

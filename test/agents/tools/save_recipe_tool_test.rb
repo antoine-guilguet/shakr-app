@@ -12,8 +12,8 @@ class SaveRecipeToolTest < ActionDispatch::IntegrationTest
     payload = {
       name: "Saved By Agent",
       description: "Silky and balanced",
-      tags: ["rum", "tropical"],
-      steps: ["Shake with ice", "Strain into chilled glass"],
+      tags: [ "rum", "tropical" ],
+      steps: [ "Shake with ice", "Strain into chilled glass" ],
       ingredients: [
         { name: "White rum", quantity: 45, unit: "ml" },
         { name: "Lime juice", quantity: 20, unit: "ml" }
@@ -41,8 +41,8 @@ class SaveRecipeToolTest < ActionDispatch::IntegrationTest
     post agent_tool_path(name: "save_recipe"),
       params: {
         name: "Invalid Draft",
-        steps: ["Shake"],
-        ingredients: [{ name: "Gin", quantity: 45, unit: "liter" }]
+        steps: [ "Shake" ],
+        ingredients: [ { name: "Gin", quantity: 45, unit: "liter" } ]
       },
       as: :json
 

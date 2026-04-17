@@ -49,7 +49,7 @@ module Tools
                 label: { type: "string" },
                 utterance: { type: "string" }
               },
-              required: ["id", "label", "utterance"]
+              required: [ "id", "label", "utterance" ]
             }
           },
           recipe: {
@@ -70,7 +70,7 @@ module Tools
                 items: { type: "string" }
               }
             },
-            required: ["name"]
+            required: [ "name" ]
           }
         }
       }
@@ -161,7 +161,7 @@ module Tools
 
           next if name.blank?
 
-          parts = [quantity, unit, name].compact.map(&:to_s).map(&:strip).reject(&:blank?)
+          parts = [ quantity, unit, name ].compact.map(&:to_s).map(&:strip).reject(&:blank?)
           next parts.join(" ") if parts.any?
         end
 

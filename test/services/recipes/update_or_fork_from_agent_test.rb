@@ -16,8 +16,8 @@ class Recipes::UpdateOrForkFromAgentTest < ActiveSupport::TestCase
       "recipe_id" => recipe.id,
       "name" => "Updated Fixture Cocktail",
       "description" => "Still a test",
-      "tags" => ["citrus", "refreshing"],
-      "steps" => ["Shake hard", "Double strain"],
+      "tags" => [ "citrus", "refreshing" ],
+      "steps" => [ "Shake hard", "Double strain" ],
       "ingredients" => [
         { "name" => "Gin", "quantity" => 60, "unit" => "ml" },
         { "name" => "Lime juice", "quantity" => 25, "unit" => "ml" }
@@ -34,7 +34,7 @@ class Recipes::UpdateOrForkFromAgentTest < ActiveSupport::TestCase
 
     recipe.reload
     assert_equal "Updated Fixture Cocktail", recipe.name
-    assert_equal ["citrus", "refreshing"], recipe.tags
+    assert_equal [ "citrus", "refreshing" ], recipe.tags
     assert_equal 2, recipe.recipe_ingredients.count
   end
 
@@ -46,8 +46,8 @@ class Recipes::UpdateOrForkFromAgentTest < ActiveSupport::TestCase
       "recipe_id" => source.id,
       "name" => "Forked Second",
       "description" => "Forked",
-      "tags" => ["fork"],
-      "steps" => ["Stir", "Serve"],
+      "tags" => [ "fork" ],
+      "steps" => [ "Stir", "Serve" ],
       "ingredients" => [
         { "name" => "Vermouth", "quantity" => 30, "unit" => "ml" },
         { "name" => "Whiskey", "quantity" => 60, "unit" => "ml" }
@@ -70,8 +70,8 @@ class Recipes::UpdateOrForkFromAgentTest < ActiveSupport::TestCase
     payload = {
       "recipe_id" => source.id,
       "name" => "Nope",
-      "steps" => ["One"],
-      "ingredients" => [{ "name" => "Gin", "quantity" => 45, "unit" => "ml" }]
+      "steps" => [ "One" ],
+      "ingredients" => [ { "name" => "Gin", "quantity" => 45, "unit" => "ml" } ]
     }
 
     error = assert_raises(Recipes::CreateFromAgent::ValidationError) do

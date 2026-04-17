@@ -42,7 +42,7 @@ module Tools
                 quantity: { type: "number" },
                 unit: { type: "string", enum: RecipeIngredient::UNITS }
               },
-              required: ["name", "quantity", "unit"]
+              required: [ "name", "quantity", "unit" ]
             }
           },
           steps: {
@@ -64,7 +64,7 @@ module Tools
               "forked copies default to private unless you set this to true)."
           }
         },
-        required: ["recipe_id", "name", "ingredients", "steps"]
+        required: [ "recipe_id", "name", "ingredients", "steps" ]
       }
     end
 
@@ -109,7 +109,7 @@ module Tools
           end
 
         unit = ri.unit.to_s.strip
-        [qty_str, unit, name].map(&:to_s).reject(&:blank?).join(" ").strip
+        [ qty_str, unit, name ].map(&:to_s).reject(&:blank?).join(" ").strip
       end.compact
     end
   end

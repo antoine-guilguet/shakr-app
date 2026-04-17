@@ -35,7 +35,7 @@ module Tools
                 quantity: { type: "number" },
                 unit: { type: "string", enum: RecipeIngredient::UNITS }
               },
-              required: ["name", "quantity", "unit"]
+              required: [ "name", "quantity", "unit" ]
             }
           },
           steps: {
@@ -56,7 +56,7 @@ module Tools
             description: "Whether this recipe should be public."
           }
         },
-        required: ["name", "ingredients", "steps"]
+        required: [ "name", "ingredients", "steps" ]
       }
     end
 

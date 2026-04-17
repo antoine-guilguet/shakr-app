@@ -98,7 +98,7 @@ module Openai
             instructions: INSTRUCTIONS,
             tools: ::ToolRegistry.default.definitions_for_openai,
             tool_choice: "auto",
-            output_modalities: ["audio"],
+            output_modalities: [ "audio" ],
             audio: {
               input: {
                 transcription: {

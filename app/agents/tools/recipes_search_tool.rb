@@ -21,7 +21,7 @@ module Tools
               description: "Optional filter. 'private' means the user's own recipes. 'public' means community recipes."
             }
           },
-          required: ["query"]
+          required: [ "query" ]
         }
       end
 
@@ -72,7 +72,7 @@ module Tools
             end
 
           unit = ri.unit.to_s.strip
-          [qty_str, unit, name].map(&:to_s).reject(&:blank?).join(" ").strip
+          [ qty_str, unit, name ].map(&:to_s).reject(&:blank?).join(" ").strip
         end.compact
       end
 
@@ -88,4 +88,3 @@ module Tools
       end
   end
 end
-

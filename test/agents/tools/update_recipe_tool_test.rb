@@ -14,8 +14,8 @@ class UpdateRecipeToolTest < ActionDispatch::IntegrationTest
       recipe_id: recipe.id,
       name: "Tool Updated Name",
       description: "Via tool",
-      tags: ["tool"],
-      steps: ["Step one", "Step two"],
+      tags: [ "tool" ],
+      steps: [ "Step one", "Step two" ],
       ingredients: [
         { name: "Gin", quantity: 45, unit: "ml" },
         { name: "Tonic", quantity: 100, unit: "ml" }
@@ -43,7 +43,7 @@ class UpdateRecipeToolTest < ActionDispatch::IntegrationTest
     payload = {
       recipe_id: source.id,
       name: "Forked via tool",
-      steps: ["Mix", "Pour"],
+      steps: [ "Mix", "Pour" ],
       ingredients: [
         { name: "Rum", quantity: 50, unit: "ml" },
         { name: "Lime", quantity: 20, unit: "ml" }
@@ -67,8 +67,8 @@ class UpdateRecipeToolTest < ActionDispatch::IntegrationTest
       params: {
         recipe_id: recipe.id,
         name: "Bad",
-        steps: ["Shake"],
-        ingredients: [{ name: "Gin", quantity: 45, unit: "liter" }]
+        steps: [ "Shake" ],
+        ingredients: [ { name: "Gin", quantity: 45, unit: "liter" } ]
       },
       as: :json
 

@@ -25,8 +25,8 @@ class Agent::ToolsControllerTest < ActionDispatch::IntegrationTest
       name: "Public Margarita",
       description: "A bright classic",
       is_public: true,
-      tags: ["citrus"],
-      steps: ["Shake", "Strain"]
+      tags: [ "citrus" ],
+      steps: [ "Shake", "Strain" ]
     )
 
     post agent_tool_path(name: "recipes_search"),
@@ -46,8 +46,8 @@ class Agent::ToolsControllerTest < ActionDispatch::IntegrationTest
       name: "Slider Sour",
       description: "Voice slider fixture",
       is_public: false,
-      tags: ["test"],
-      steps: ["Dry shake egg white", "Shake with ice and fine strain"]
+      tags: [ "test" ],
+      steps: [ "Dry shake egg white", "Shake with ice and fine strain" ]
     )
     RecipeIngredient.create!(
       recipe: recipe,
@@ -74,7 +74,7 @@ class Agent::ToolsControllerTest < ActionDispatch::IntegrationTest
     ingredients = body.dig("recipe", "ingredients")
     assert ingredients.is_a?(Array)
     assert(ingredients.any? { |line| line.to_s.include?("Gin") })
-    assert_equal ["Dry shake egg white", "Shake with ice and fine strain"], body.dig("recipe", "steps_preview")
+    assert_equal [ "Dry shake egg white", "Shake with ice and fine strain" ], body.dig("recipe", "steps_preview")
   end
 
   test "recipes_search can return the current user's private recipe" do
@@ -83,8 +83,8 @@ class Agent::ToolsControllerTest < ActionDispatch::IntegrationTest
       name: "Secret Negroni",
       description: "My private spec",
       is_public: false,
-      tags: ["bitter"],
-      steps: ["Stir", "Strain"]
+      tags: [ "bitter" ],
+      steps: [ "Stir", "Strain" ]
     )
 
     post agent_tool_path(name: "recipes_search"),
@@ -104,8 +104,8 @@ class Agent::ToolsControllerTest < ActionDispatch::IntegrationTest
       name: "Other User Secret",
       description: "Do not leak",
       is_public: false,
-      tags: ["private"],
-      steps: ["Stir"]
+      tags: [ "private" ],
+      steps: [ "Stir" ]
     )
 
     post agent_tool_path(name: "recipes_search"),
@@ -133,8 +133,8 @@ class Agent::ToolsControllerTest < ActionDispatch::IntegrationTest
       name: "Pisco Sour",
       description: "Classic",
       is_public: true,
-      tags: ["sour"],
-      steps: ["Shake"]
+      tags: [ "sour" ],
+      steps: [ "Shake" ]
     )
 
     post agent_tool_path(name: "recipes_search"),
@@ -151,12 +151,12 @@ class Agent::ToolsControllerTest < ActionDispatch::IntegrationTest
     fake_attributes = {
       name: "Draft Daiquiri",
       description: "Crisp and bright.",
-      tags: ["rum", "citrus"],
+      tags: [ "rum", "citrus" ],
       ingredients: [
         { name: "White rum", quantity: 45, unit: "ml" },
         { name: "Lime juice", quantity: 25, unit: "ml" }
       ],
-      steps: ["Shake with ice.", "Strain into a chilled coupe."],
+      steps: [ "Shake with ice.", "Strain into a chilled coupe." ],
       glassware: "Coupe",
       garnish: "Lime wheel"
     }
@@ -217,4 +217,3 @@ class Agent::ToolsControllerTest < ActionDispatch::IntegrationTest
     assert_nil body["recipe"]
   end
 end
-

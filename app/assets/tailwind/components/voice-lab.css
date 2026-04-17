@@ -85,7 +85,8 @@
 
   .voice-recipe-card {
     margin-top: 0.35rem;
-    padding: 1rem 1rem 0.85rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 
   .voice-recipe-card__slider {
@@ -211,6 +212,15 @@
     line-height: 1.5;
     color: var(--shakr-cream);
     counter-increment: voice-step;
+  }
+
+  .voice-recipe-card__steps--fancy li.is-active-step {
+    background: rgba(201, 136, 58, 0.10);
+    border-radius: 0.5rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    margin-left: -0.35rem;
+    padding-left: 2.45rem;
   }
 
   .voice-recipe-card__steps--fancy li::before {

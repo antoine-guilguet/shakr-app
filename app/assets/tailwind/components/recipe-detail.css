@@ -76,7 +76,7 @@
   @media (min-width: 48rem) {
     .recipes-ai-result-card {
       margin-top: 2rem;
-      padding: 2rem 2rem 1.8rem;
+      padding-top: 2rem 2rem 1.8rem;
     }
 
     .recipes-ai-meta-item {

@@ -3,6 +3,8 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = [
     "button",
+    "buttonLabel",
+    "buttonState",
     "status",
     "summarySection",
     "summary",
@@ -37,10 +39,15 @@ export default class extends Controller {
     this.autostartAttempted = false
     this.functionArgDeltas = new Map()
     this.handledCallIds = new Set()
+    this.voicePhase = "idle"
     this.uiState = {
       summary: null,
       recipe: null,
-      actions: []
+      actions: [],
+      display: null,
+      recipe_mode: null,
+      current_step_index: null,
+      total_steps: null
     }
     this.currentRecipeSlideIndex = 0
     this.setUiIdle()
@@ -86,11 +93,40 @@ export default class extends Controller {
     }
   }
 
+  setFabState({ phase, active, label, stateText, busy }) {
+    const nextPhase = phase || "idle"
+    this.voicePhase = nextPhase
+
+    if (this.hasButtonTarget) {
+      this.buttonTarget.dataset.voiceState = nextPhase
+      this.buttonTarget.dataset.voiceActive = active ? "true" : "false"
+      if (typeof busy === "boolean") {
+        this.buttonTarget.setAttribute("aria-busy", busy ? "true" : "false")
+      } else {
+        this.buttonTarget.removeAttribute("aria-busy")
+      }
+      if (typeof label === "string" && this.hasButtonLabelTarget) {
+        this.buttonLabelTarget.textContent = label
+      } else if (typeof label === "string") {
+        this.buttonTarget.textContent = label
+      }
+      if (this.hasButtonStateTarget) {
+        this.buttonStateTarget.textContent = stateText ? stateText.toString() : ""
+      }
+    }
+  }
+
   setUiIdle() {
     this.active = false
     if (this.hasButtonTarget) {
       this.buttonTarget.disabled = false
-      this.buttonTarget.textContent = "Talk to Shakr"
+      this.setFabState({
+        phase: "idle",
+        active: false,
+        label: "Talk to Shakr",
+        stateText: "",
+        busy: false
+      })
     }
     if (this.hasStatusTarget) this.statusTarget.textContent = ""
   }
@@ -99,7 +135,13 @@ export default class extends Controller {
     this.active = true
     if (this.hasButtonTarget) {
       this.buttonTarget.disabled = false
-      this.buttonTarget.textContent = "End voice"
+      this.setFabState({
+        phase: "listening",
+        active: true,
+        label: "End voice",
+        stateText: "Listening",
+        busy: false
+      })
     }
     if (this.hasStatusTarget) this.statusTarget.textContent = "Listening..."
   }
@@ -108,7 +150,13 @@ export default class extends Controller {
     this.active = false
     if (this.hasButtonTarget) {
       this.buttonTarget.disabled = false
-      this.buttonTarget.textContent = "Talk to Shakr"
+      this.setFabState({
+        phase: "error",
+        active: false,
+        label: "Talk to Shakr",
+        stateText: "Error",
+        busy: false
+      })
     }
     if (this.hasStatusTarget) this.statusTarget.textContent = message
   }
@@ -229,6 +277,10 @@ export default class extends Controller {
     if (typeof payload.summary === "string") this.uiState.summary = payload.summary
     if (Array.isArray(payload.actions)) this.uiState.actions = payload.actions
     if (Object.prototype.hasOwnProperty.call(payload, "recipe")) this.uiState.recipe = payload.recipe
+    if (typeof payload.display === "string") this.uiState.display = payload.display
+    if (typeof payload.recipe_mode === "string") this.uiState.recipe_mode = payload.recipe_mode
+    if (typeof payload.current_step_index === "number") this.uiState.current_step_index = payload.current_step_index
+    if (typeof payload.total_steps === "number") this.uiState.total_steps = payload.total_steps
     this.renderUiState()
   }
 
@@ -256,6 +308,11 @@ export default class extends Controller {
 
     if (this.hasRecipeSectionTarget) this.recipeSectionTarget.hidden = false
     this.fillRecipeCard(recipe)
+
+    // Optional hint: auto-switch panel for guided mode
+    if (this.uiState.display === "steps") {
+      this.currentRecipeSlideIndex = 1
+    }
     this.updateRecipeSliderUi()
   }
 
@@ -309,9 +366,13 @@ export default class extends Controller {
     const steps = Array.isArray(recipe?.steps_preview) ? recipe.steps_preview : []
     if (this.hasRecipeStepsTarget) {
       this.recipeStepsTarget.innerHTML = ""
-      steps.forEach((step) => {
+      const activeIdx = Number.isInteger(this.uiState.current_step_index) ? this.uiState.current_step_index : null
+      steps.forEach((step, idx) => {
         const li = document.createElement("li")
         li.textContent = step.toString()
+        if (activeIdx !== null && idx === activeIdx) {
+          li.classList.add("is-active-step")
+        }
         this.recipeStepsTarget.appendChild(li)
       })
       this.recipeStepsTarget.hidden = steps.length === 0
@@ -391,11 +452,27 @@ export default class extends Controller {
 
     if (!ok) return
     this.sendRealtimeEvent({ type: "response.create" })
+    if (this.active) {
+      this.setFabState({
+        phase: "thinking",
+        active: true,
+        label: "End voice",
+        stateText: "Thinking",
+        busy: true
+      })
+    }
     if (this.hasStatusTarget) this.statusTarget.textContent = "Thinking..."
   }
 
   async startSession() {
     if (this.hasButtonTarget) this.buttonTarget.disabled = true
+    this.setFabState({
+      phase: "connecting",
+      active: false,
+      label: "Starting…",
+      stateText: "Connecting",
+      busy: true
+    })
     if (this.hasStatusTarget) this.statusTarget.textContent = "Connecting…"
 
     let ephemeralKey
@@ -455,11 +532,29 @@ export default class extends Controller {
       try {
         const event = JSON.parse(e.data)
         if (event.type === "response.created") {
+          if (this.active) {
+            this.setFabState({
+              phase: "thinking",
+              active: true,
+              label: "End voice",
+              stateText: "Thinking",
+              busy: true
+            })
+          }
           if (this.hasStatusTarget) this.statusTarget.textContent = "Thinking..."
           return
         }
 
         if (event.type === "response.completed") {
+          if (this.active) {
+            this.setFabState({
+              phase: "listening",
+              active: true,
+              label: "End voice",
+              stateText: "Listening",
+              busy: false
+            })
+          }
           if (this.hasStatusTarget) this.statusTarget.textContent = "Listening..."
           return
         }

@@ -5,8 +5,12 @@
     class="voice-agent-fab"
     data-realtime-voice-target="button"
     data-action="click->realtime-voice#toggle"
+    data-voice-state="idle"
+    data-voice-active="false"
+    aria-label="Talk to Shakr"
   >
-    Talk to Shakr
+    <span class="voice-agent-fab__label" data-realtime-voice-target="buttonLabel">Talk to Shakr</span>
+    <span class="voice-agent-fab__state" data-realtime-voice-target="buttonState" aria-hidden="true"></span>
   </button>
 <% else %>
   <%= link_to voice_path(autostart: 1),

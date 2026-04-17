@@ -20,6 +20,24 @@ module Tools
             enum: %w[listening clarifying suggesting_recipe confirming_save done],
             description: "Optional conversation phase."
           },
+          display: {
+            type: "string",
+            enum: %w[overview steps],
+            description: "Optional UI hint for which recipe panel to show."
+          },
+          recipe_mode: {
+            type: "string",
+            enum: %w[preview howto],
+            description: "Optional recipe utterance mode (for UI mirroring)."
+          },
+          current_step_index: {
+            type: "integer",
+            description: "Optional current step index (0-based) when guiding."
+          },
+          total_steps: {
+            type: "integer",
+            description: "Optional total number of steps when guiding."
+          },
           actions: {
             type: "array",
             description: "Suggested next actions rendered as quick buttons.",
@@ -61,6 +79,10 @@ module Tools
     def call(user:, input:)
       summary = input["summary"]
       phase = input["phase"]
+      display = input["display"]
+      recipe_mode = input["recipe_mode"]
+      current_step_index = input["current_step_index"]
+      total_steps = input["total_steps"]
       actions = input["actions"]
       recipe = input["recipe"]
 
@@ -72,6 +94,10 @@ module Tools
         ok: true,
         summary: summary.to_s.strip.presence,
         phase: phase.to_s.strip.presence,
+        display: display.to_s.strip.presence,
+        recipe_mode: recipe_mode.to_s.strip.presence,
+        current_step_index: current_step_index,
+        total_steps: total_steps,
         actions: normalize_actions(actions),
         recipe: normalize_recipe(recipe)
       }

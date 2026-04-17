@@ -9,12 +9,11 @@
         Sha<span>k</span>r
       <% end %>
     <% end %>
-    <div class="navbar-tagline">AI Cocktail Companion</div>
   </div>
 
   <div class="navbar-right">
     <% if user_signed_in? %>
-      <details class="navbar-user-menu">
+      <details class="navbar-user-menu" data-controller="details-dropdown">
         <summary class="navbar-user-summary">
           <div class="navbar-avatar">
             <span>
@@ -26,6 +25,7 @@
           </span>
         </summary>
         <div class="navbar-user-dropdown">
+          <%= link_to "Recipes", recipes_path, class: "navbar-dropdown-item" %>
           <%= link_to "Edit profile", edit_user_registration_path, class: "navbar-dropdown-item" %>
           <%= link_to "Log out",
                       destroy_user_session_path,

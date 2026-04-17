@@ -1,0 +1,36 @@
+<% section_class = local_assigns.fetch(:section_class, "ai-recipe-section") %>
+<div class="<%= section_class %>">
+  <h3 class="ai-recipe-section-title">Ingredients</h3>
+
+  <% lines = recipe.recipe_ingredients.includes(:ingredient) %>
+  <% if lines.any? %>
+    <ul class="ai-recipe-ingredients">
+      <% lines.each do |line| %>
+        <li class="ai-recipe-ingredient">
+          <span class="ai-recipe-ingredient-qty">
+            <%= [line.amount, line.unit].compact.join(" ") %>
+          </span>
+          <span class="ai-recipe-ingredient-name"><%= line.ingredient.name %></span>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="ai-recipe-empty">No ingredients.</p>
+  <% end %>
+
+  <div class="recipes-ai-meta">
+    <% if recipe.glassware.present? %>
+      <div class="recipes-ai-meta-item">
+        <span class="recipes-ai-meta-label">Glassware</span>
+        <span class="recipes-ai-meta-value"><%= recipe.glassware %></span>
+      </div>
+    <% end %>
+
+    <% if recipe.garnish.present? %>
+      <div class="recipes-ai-meta-item">
+        <span class="recipes-ai-meta-label">Garnish</span>
+        <span class="recipes-ai-meta-value"><%= recipe.garnish %></span>
+      </div>
+    <% end %>
+  </div>
+</div>

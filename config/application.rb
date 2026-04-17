@@ -21,6 +21,11 @@ module ShakrApp
     config.autoload_paths << services_path unless config.autoload_paths.include?(services_path)
     config.eager_load_paths << services_path unless config.eager_load_paths.include?(services_path)
 
+    # Autoload and eager load app/agents for tool registry + tools.
+    agents_path = Rails.root.join("app/agents")
+    config.autoload_paths << agents_path unless config.autoload_paths.include?(agents_path)
+    config.eager_load_paths << agents_path unless config.eager_load_paths.include?(agents_path)
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

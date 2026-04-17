@@ -1,0 +1,250 @@
+@layer components {
+  .voice-agent-fab {
+    position: fixed;
+    left: 50%;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 150;
+    min-width: 11rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.22);
+    border-radius: 9999px;
+    background: var(--shakr-amber);
+    color: var(--shakr-black);
+    font-family: "DM Mono", monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    transition:
+      background 0.25s,
+      transform 0.15s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    gap: 0.2rem;
+    flex-direction: column;
+    line-height: 1.15;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a.voice-agent-fab {
+    text-decoration: none;
+  }
+
+  .voice-agent-fab:hover:not(:disabled) {
+    background: var(--shakr-amber-light);
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .voice-agent-fab:active:not(:disabled) {
+    transform: translateX(-50%) scale(1.03);
+  }
+
+  .voice-agent-fab:focus-visible {
+    outline: 2px solid rgba(240, 232, 216, 0.9);
+    outline-offset: 3px;
+  }
+
+  .voice-agent-fab:disabled {
+    opacity: 0.65;
+    cursor: wait;
+  }
+
+  .voice-agent-fab__label {
+    font-weight: 700;
+    letter-spacing: 0.2em;
+  }
+
+  .voice-agent-fab__state {
+    min-height: 0.95rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.16em;
+    opacity: 0.85;
+  }
+
+  .voice-agent-fab[data-voice-state="idle"] {
+    gap: 0;
+  }
+
+  .voice-agent-fab[data-voice-state="idle"] .voice-agent-fab__state {
+    display: none;
+  }
+
+  .voice-agent-fab::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 9999px;
+    border: 1px solid rgba(201, 136, 58, 0.25);
+    box-shadow: 0 0 0 rgba(201, 136, 58, 0);
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.98);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .voice-agent-fab::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 9999px;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  .voice-agent-fab[data-voice-active="true"] {
+    background: rgba(10, 7, 4, 0.96);
+    color: rgba(255, 250, 240, 0.92);
+    border-color: rgba(240, 90, 70, 0.55);
+    box-shadow:
+      0 14px 36px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(240, 90, 70, 0.18) inset;
+  }
+
+  .voice-agent-fab[data-voice-active="true"]:hover:not(:disabled) {
+    background: rgba(10, 7, 4, 0.98);
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .voice-agent-fab[data-voice-active="true"]::before {
+    opacity: 1;
+    border-color: rgba(240, 90, 70, 0.35);
+    box-shadow: 0 0 0 rgba(240, 90, 70, 0);
+  }
+
+  .voice-agent-fab[data-voice-state="connecting"]::before {
+    opacity: 1;
+    border-color: rgba(240, 232, 216, 0.35);
+    animation: none;
+  }
+
+  .voice-agent-fab[data-voice-state="connecting"]::after {
+    opacity: 1;
+    border: 1px solid rgba(240, 232, 216, 0.28);
+    box-shadow: 0 0 0 rgba(240, 232, 216, 0);
+    animation: voice-fab-ripple 1.25s ease-out infinite;
+  }
+
+  .voice-agent-fab[data-voice-state="listening"]::before {
+    opacity: 1;
+    border-color: rgba(240, 90, 70, 0.42);
+    animation: voice-fab-pulse 2.2s ease-in-out infinite;
+  }
+
+  .voice-agent-fab[data-voice-state="thinking"]::before {
+    opacity: 1;
+    border-color: rgba(201, 136, 58, 0.45);
+    animation: voice-fab-pulse 1.6s ease-in-out infinite;
+  }
+
+  .voice-agent-fab[data-voice-state="error"] {
+    border-color: rgba(240, 90, 70, 0.65);
+  }
+
+  .voice-agent-fab[data-voice-state="error"]::before {
+    opacity: 1;
+    border-color: rgba(240, 90, 70, 0.5);
+    animation: voice-fab-shake 320ms ease-in-out 1;
+  }
+
+  .voice-agent-fab[data-voice-state="thinking"] .voice-agent-fab__state::after {
+    content: "...";
+    display: inline-block;
+    width: 0ch;
+    overflow: hidden;
+    vertical-align: bottom;
+    margin-left: 0.4ch;
+    animation: voice-fab-dots 1.1s steps(4, end) infinite;
+  }
+
+  @keyframes voice-fab-ripple {
+    0% {
+      transform: scale(0.98);
+      opacity: 0.0;
+      box-shadow: 0 0 0 rgba(240, 232, 216, 0);
+    }
+    18% {
+      opacity: 0.65;
+    }
+    100% {
+      transform: scale(1.12);
+      opacity: 0;
+      box-shadow: 0 0 18px rgba(240, 232, 216, 0.12);
+    }
+  }
+
+  @keyframes voice-fab-pulse {
+    0% {
+      transform: scale(0.992);
+      box-shadow: 0 0 0 rgba(240, 90, 70, 0);
+    }
+    50% {
+      transform: scale(1.02);
+      box-shadow: 0 0 18px rgba(240, 90, 70, 0.14);
+    }
+    100% {
+      transform: scale(0.992);
+      box-shadow: 0 0 0 rgba(240, 90, 70, 0);
+    }
+  }
+
+  @keyframes voice-fab-dots {
+    0% {
+      width: 0ch;
+    }
+    100% {
+      width: 3ch;
+    }
+  }
+
+  @keyframes voice-fab-shake {
+    0% {
+      transform: scale(0.98) translateX(0);
+    }
+    25% {
+      transform: scale(0.98) translateX(-2px);
+    }
+    55% {
+      transform: scale(0.98) translateX(2px);
+    }
+    100% {
+      transform: scale(0.98) translateX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .voice-agent-fab,
+    .voice-agent-fab::before,
+    .voice-agent-fab::after,
+    .voice-agent-fab .voice-agent-fab__state::after {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .voice-agent-fab:active:not(:disabled) {
+      transform: translateX(-50%);
+    }
+  }
+
+  .recipes-index--voice-fab,
+  .recipes-show--voice-fab {
+    padding-bottom: max(6.5rem, calc(5.5rem + env(safe-area-inset-bottom)));
+  }
+
+  .voice-lab--voice-fab {
+    padding-bottom: max(5.5rem, calc(4.5rem + env(safe-area-inset-bottom)));
+  }
+}

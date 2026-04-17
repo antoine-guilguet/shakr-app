@@ -1,0 +1,351 @@
+@layer components {
+  .voice-lab {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: var(--section-pad-y) 0 1rem;
+  }
+
+  .voice-lab-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .voice-lab-title {
+    margin: 0 0 1rem;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--shakr-cream);
+  }
+
+  .voice-lab-lede {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.85;
+    letter-spacing: 0.04em;
+    color: var(--shakr-text-muted);
+  }
+
+  .voice-ui {
+    display: grid;
+    gap: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .voice-ui-section {
+    padding: 0.95rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(201, 136, 58, 0.2);
+    background: rgba(240, 232, 216, 0.04);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .voice-ui-section[hidden] {
+    display: none;
+  }
+
+  .voice-ui-section__title {
+    margin: 0;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+  }
+
+  .voice-ui-summary {
+    margin: 0.45rem 0 0;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+    color: var(--shakr-cream);
+  }
+
+  .voice-ui-actions {
+    margin-top: 0.55rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .voice-ui-action {
+    background: rgba(8, 6, 4, 0.96);
+    color: var(--shakr-cream);
+    border-radius: 999px;
+    min-height: 2.5rem;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+  }
+
+  .voice-ui-action:hover {
+    border-color: rgba(201, 136, 58, 0.4);
+    background: rgba(8, 6, 4, 0.96);
+  }
+
+  .voice-recipe-card {
+    margin-top: 0.35rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .voice-recipe-card__slider {
+    overflow: hidden;
+    border-radius: 0.85rem;
+    margin: 0 -0.15rem;
+  }
+
+  .voice-recipe-card__track {
+    display: flex;
+    width: 200%;
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+
+  .voice-recipe-card__slide {
+    flex: 0 0 50%;
+    width: 50%;
+    min-width: 50%;
+    box-sizing: border-box;
+    padding: 0.25rem 0.35rem 0.5rem;
+    min-height: 6.5rem;
+  }
+
+  .voice-recipe-card__empty-hint {
+    margin: 0.5rem 0 0;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--shakr-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .voice-recipe-card__slider-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.85rem;
+    padding-top: 0.75rem;
+  }
+
+  .voice-recipe-card__slider-btn {
+    flex: 0 0 auto;
+    min-height: 2.25rem;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--shakr-cream);
+    background: rgba(8, 6, 4, 0.96);
+    border: 1px solid rgba(201, 136, 58, 0.35);
+    border-radius: 999px;
+    cursor: pointer;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      opacity 0.15s ease;
+  }
+
+  .voice-recipe-card__slider-btn:hover:not(:disabled) {
+    background: rgba(8, 6, 4, 0.96);
+    border-color: rgba(201, 136, 58, 0.55);
+  }
+
+  .voice-recipe-card__slider-btn:focus-visible {
+    outline: 2px solid rgba(201, 136, 58, 0.55);
+    outline-offset: 2px;
+  }
+
+  .voice-recipe-card__slider-btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+  }
+
+  .voice-recipe-card__slider-indicator {
+    flex: 1;
+    text-align: center;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .voice-recipe-card__list--ingredients {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.45rem;
+  }
+
+  .voice-recipe-card__list--ingredients li {
+    position: relative;
+    padding-left: 0.85rem;
+    margin: 0.28rem 0;
+    font-size: 0.74rem;
+    line-height: 1.45;
+    color: var(--shakr-cream);
+  }
+
+  .voice-recipe-card__list--ingredients li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(201, 136, 58, 0.75);
+  }
+
+  .voice-recipe-card__steps--fancy {
+    counter-reset: voice-step;
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.45rem;
+  }
+
+  .voice-recipe-card__steps--fancy li {
+    margin: 0.55rem 0;
+    font-size: 0.74rem;
+    line-height: 1.5;
+    color: var(--shakr-cream);
+    counter-increment: voice-step;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+  }
+
+  .voice-recipe-card__steps--fancy li.is-active-step {
+    background: rgba(201, 136, 58, 0.10);
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.35rem;
+  }
+
+  .voice-recipe-card__steps--fancy li::before {
+    content: counter(voice-step, decimal-leading-zero);
+    width: 1.6rem;
+    height: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    color: rgba(255, 250, 240, 0.92);
+    background: rgba(201, 136, 58, 0.18);
+    border: 1px solid rgba(201, 136, 58, 0.35);
+    border-radius: 0.45rem;
+    flex: 0 0 auto;
+    margin-top: 0.05rem;
+  }
+
+  .voice-recipe-card__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .voice-recipe-card__link {
+    color: var(--shakr-cream);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .voice-recipe-card__link:hover {
+    text-decoration: underline;
+  }
+
+  .voice-recipe-card__name {
+    font-weight: 500;
+  }
+
+  .voice-recipe-card__badge {
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: var(--shakr-text-muted);
+  }
+
+  .voice-recipe-card__desc {
+    margin-top: 0.35rem;
+    color: var(--shakr-text-muted);
+  }
+
+  .voice-recipe-card__section {
+    margin-top: 0.75rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--shakr-text-muted);
+  }
+
+  .voice-recipe-card__list {
+    margin: 0.35rem 0 0;
+    padding-left: 1.1rem;
+    color: var(--shakr-cream);
+  }
+
+  /* Ensure steps slide isn't indented by the generic list rule above. */
+  .voice-recipe-card__list.voice-recipe-card__steps--fancy {
+    padding-left: 0;
+  }
+
+  .voice-recipe-card__list li {
+    margin: 0.18rem 0;
+  }
+
+  .voice-recipe-card__steps {
+    padding-left: 1.25rem;
+  }
+
+  .voice-lab-button {
+    width: 100%;
+    justify-content: center;
+    min-height: 3rem;
+  }
+
+  .voice-lab-status {
+    margin: 1.25rem 0 0;
+    min-height: 1.25rem;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: var(--shakr-amber-light);
+  }
+
+  .voice-lab-status:empty {
+    display: none;
+  }
+
+  .voice-lab-back {
+    margin: 2.5rem 0 0;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .voice-lab-back a {
+    color: var(--shakr-amber);
+    text-decoration: none;
+  }
+
+  .voice-lab-back a:hover {
+    text-decoration: underline;
+  }
+
+  @media (min-width: 48rem) {
+    .voice-lab {
+      padding-bottom: 2rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .voice-lab {
+      padding-bottom: 3rem;
+    }
+  }
+}

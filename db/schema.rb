@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_22_170251) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_25_181751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_trgm"
 
   create_table "ingredients", force: :cascade do |t|
     t.string "name", null: false
@@ -47,7 +48,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_170251) do
     t.datetime "updated_at", null: false
     t.text "ingredients"
     t.boolean "is_public", default: false, null: false
+    t.virtual "search_vector", type: :tsvector, as: "(((((setweight(to_tsvector('simple'::regconfig, (COALESCE(name, ''::character varying))::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, COALESCE(tags, ''::text)), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, COALESCE(description, ''::text)), 'C'::\"char\")) || setweight(to_tsvector('simple'::regconfig, COALESCE(steps, ''::text)), 'C'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(glassware, ''::character varying))::text), 'C'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(garnish, ''::character varying))::text), 'C'::\"char\"))", stored: true
+    t.index "lower((name)::text) gin_trgm_ops", name: "index_recipes_on_lower_name_trgm", using: :gin
     t.index ["is_public"], name: "index_recipes_on_is_public"
+    t.index ["search_vector"], name: "index_recipes_on_search_vector", using: :gin
     t.index ["user_id"], name: "index_recipes_on_user_id"
   end
 

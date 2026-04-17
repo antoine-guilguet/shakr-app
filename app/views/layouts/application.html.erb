@@ -15,8 +15,8 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%# Compiled Tailwind bundle (see Procfile.dev: bin/rails tailwindcss:watch) %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -31,7 +31,13 @@
       <% end %>
     </div>
 
-    <%= yield %>
+    <% if content_for?(:full_bleed) %>
+      <%= yield %>
+    <% else %>
+      <main class="app-shell">
+        <%= yield %>
+      </main>
+    <% end %>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {

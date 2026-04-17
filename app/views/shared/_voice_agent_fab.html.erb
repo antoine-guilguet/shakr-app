@@ -1,0 +1,21 @@
+<%# locals: mode (:link | :button) %>
+<% if local_assigns[:mode] == :button %>
+  <button
+    type="button"
+    class="voice-agent-fab"
+    data-realtime-voice-target="button"
+    data-action="click->realtime-voice#toggle"
+    data-voice-state="idle"
+    data-voice-active="false"
+    aria-label="Talk to Shakr"
+  >
+    <span class="voice-agent-fab__label" data-realtime-voice-target="buttonLabel">Talk to Shakr</span>
+    <span class="voice-agent-fab__state" data-realtime-voice-target="buttonState" aria-hidden="true"></span>
+  </button>
+<% else %>
+  <%= link_to voice_path(autostart: 1),
+              class: "voice-agent-fab",
+              aria: { label: "Talk to Shakr" } do %>
+    Talk to Shakr
+  <% end %>
+<% end %>

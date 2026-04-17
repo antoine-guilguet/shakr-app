@@ -1,0 +1,18 @@
+<% section_class = local_assigns.fetch(:section_class, "ai-recipe-section") %>
+<div class="<%= section_class %>">
+  <h3 class="ai-recipe-section-title">Method</h3>
+
+  <% steps = Array(recipe.steps) %>
+  <% if steps.any? %>
+    <ol class="ai-recipe-steps ai-recipe-steps--numbered">
+      <% steps.each_with_index do |step, idx| %>
+        <li class="ai-recipe-step">
+          <span class="ai-recipe-step-num"><%= idx + 1 %>.</span>
+          <span class="ai-recipe-step-text"><%= step %></span>
+        </li>
+      <% end %>
+    </ol>
+  <% else %>
+    <p class="ai-recipe-empty">No steps.</p>
+  <% end %>
+</div>

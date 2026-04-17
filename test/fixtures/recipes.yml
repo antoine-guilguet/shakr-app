@@ -2,8 +2,8 @@ one:
   user: one
   name: Fixture Cocktail
   description: A test recipe
-  tags: <%= ["citrus"].to_json %>
-  steps: <%= ["Shake", "Strain"].to_json %>
+  tags: '["citrus"]'
+  steps: '["Shake", "Strain"]'
   glassware: Coupe
   garnish: Lemon twist
 
@@ -11,7 +11,7 @@ two:
   user: two
   name: Second Cocktail
   description: Another
-  tags: <%= [].to_json %>
-  steps: <%= ["Stir"].to_json %>
+  tags: '[]'
+  steps: '["Stir"]'
   glassware:
   garnish:

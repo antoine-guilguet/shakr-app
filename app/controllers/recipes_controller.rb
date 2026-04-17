@@ -3,6 +3,7 @@ class RecipesController < ApplicationController
 
   before_action :set_recipe_for_show, only: %i[ show ]
   before_action :set_recipe_for_owner, only: %i[ edit update destroy ]
+  before_action :redirect_mobile_form_access_to_voice, only: %i[ new edit ]
 
   def index
     @visibility_filter = params[:visibility].presence_in(%w[public private]) || "all"
@@ -61,7 +62,7 @@ class RecipesController < ApplicationController
   private
 
   def set_recipe_for_show
-    @recipe = Recipe.find_by(id: params[:id])
+    @recipe = Recipe.includes(recipe_ingredients: :ingredient).find_by(id: params[:id])
     unless @recipe
       redirect_to root_path, alert: "Recipe not found."
       return
@@ -134,5 +135,11 @@ class RecipesController < ApplicationController
       .lines
       .map(&:strip)
       .reject(&:blank?)
+  end
+
+  def redirect_mobile_form_access_to_voice
+    return unless mobile_device?
+
+    redirect_to voice_path, notice: "On mobile, create and edit recipes with the voice assistant."
   end
 end

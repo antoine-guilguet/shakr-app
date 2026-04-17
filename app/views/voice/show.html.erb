@@ -1,0 +1,88 @@
+<div class="voice-lab voice-lab--voice-fab">
+  <section
+    data-controller="realtime-voice"
+    data-realtime-voice-session-url-value="<%= realtime_sessions_path %>"
+    data-realtime-voice-autostart-value="<%= @voice_autostart ? "true" : "false" %>"
+    aria-label="Realtime voice session"
+  >
+    <div class="voice-ui">
+      <section class="voice-ui-section" data-realtime-voice-target="summarySection">
+        <h2 class="voice-ui-section__title">What Shakr understood</h2>
+        <p class="voice-ui-summary" data-realtime-voice-target="summary" aria-live="polite"></p>
+      </section>
+
+      <section class="voice-ui-section" data-realtime-voice-target="recipeSection">
+        <h2 class="voice-ui-section__title">Suggestion</h2>
+        <div class="voice-ui-recipe">
+          <div class="voice-recipe-card" data-realtime-voice-target="recipeCard">
+            <div class="voice-recipe-card__slider" aria-hidden="false">
+              <div
+                class="voice-recipe-card__track"
+                data-realtime-voice-target="recipeTrack"
+                role="region"
+                aria-label="Recipe details"
+              >
+                <article class="voice-recipe-card__slide" aria-label="Overview">
+                  <header class="voice-recipe-card__title">
+                    <h3 class="voice-recipe-card__name" data-realtime-voice-target="recipeName"></h3>
+                    <a class="voice-recipe-card__link" data-realtime-voice-target="recipeLink" hidden></a>
+                    <span class="voice-recipe-card__badge" data-realtime-voice-target="recipeBadge" hidden></span>
+                  </header>
+
+                  <p class="voice-recipe-card__desc" data-realtime-voice-target="recipeDescription" hidden></p>
+
+                  <h4 class="voice-recipe-card__section">Ingredients</h4>
+                  <ul class="voice-recipe-card__list voice-recipe-card__list--ingredients" data-realtime-voice-target="recipeIngredients"></ul>
+                  <p class="voice-recipe-card__empty-hint" data-realtime-voice-target="recipeIngredientsHint" hidden>
+                    Ingredients will appear here when available — ask aloud for details.
+                  </p>
+                </article>
+
+                <article class="voice-recipe-card__slide" aria-label="Steps">
+                  <h4 class="voice-recipe-card__section">Guiding steps</h4>
+                  <ol class="voice-recipe-card__list voice-recipe-card__steps voice-recipe-card__steps--fancy" data-realtime-voice-target="recipeSteps"></ol>
+                  <p class="voice-recipe-card__empty-hint" data-realtime-voice-target="recipeStepsHint" hidden>
+                    I can guide you through the steps by voice — use “show the recipe” or ask me to walk through it.
+                  </p>
+                </article>
+              </div>
+            </div>
+
+            <div class="voice-recipe-card__slider-controls">
+              <button
+                type="button"
+                class="voice-recipe-card__slider-btn"
+                data-action="click->realtime-voice#prevRecipeSlide"
+                data-realtime-voice-target="recipePrevBtn"
+                aria-label="Previous slide"
+              >
+                Prev
+              </button>
+
+              <span class="voice-recipe-card__slider-indicator" data-realtime-voice-target="recipeIndicator" aria-live="polite"></span>
+
+              <button
+                type="button"
+                class="voice-recipe-card__slider-btn"
+                data-action="click->realtime-voice#nextRecipeSlide"
+                data-realtime-voice-target="recipeNextBtn"
+                aria-label="Next slide"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="voice-ui-section" data-realtime-voice-target="actionsSection">
+        <h2 class="voice-ui-section__title">Suggested actions</h2>
+        <div class="voice-ui-actions" data-realtime-voice-target="actions"></div>
+      </section>
+    </div>
+
+    <%= render "shared/voice_agent_fab", mode: :button %>
+
+    <p class="voice-lab-status sr-only" data-realtime-voice-target="status" role="status" aria-live="polite"></p>
+  </section>
+</div>

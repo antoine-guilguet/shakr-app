@@ -90,7 +90,7 @@ module Tools
         raise Error, "At least one of summary, phase, actions, or recipe is required."
       end
 
-      {
+      payload = {
         ok: true,
         summary: summary.to_s.strip.presence,
         phase: phase.to_s.strip.presence,
@@ -98,9 +98,14 @@ module Tools
         recipe_mode: recipe_mode.to_s.strip.presence,
         current_step_index: current_step_index,
         total_steps: total_steps,
-        actions: normalize_actions(actions),
-        recipe: normalize_recipe(recipe)
+        actions: normalize_actions(actions)
       }
+
+      # Only update/clear recipe when the caller explicitly included `recipe`.
+      # This avoids accidentally wiping steps/ingredients when sending a UI-only update.
+      payload[:recipe] = normalize_recipe(recipe) if input.key?("recipe")
+
+      payload
     end
 
     private
@@ -127,14 +132,24 @@ module Tools
       name = recipe["name"].to_s.strip
       return nil if name.blank?
 
-      {
+      normalized = {
         name:,
         description: recipe["description"].to_s,
         badge: recipe["badge"].to_s.presence,
-        url: recipe["url"].to_s.presence,
-        ingredients: normalize_ingredients(recipe["ingredients"]),
-        steps_preview: Array(recipe["steps_preview"]).map(&:to_s).map(&:strip).reject(&:blank?)
+        url: recipe["url"].to_s.presence
       }
+
+      # Important: only include these arrays when explicitly provided,
+      # otherwise we'd wipe existing UI state when the assistant sends partial recipe payloads.
+      if recipe.key?("ingredients") || recipe.key?(:ingredients)
+        normalized[:ingredients] = normalize_ingredients(recipe["ingredients"] || recipe[:ingredients])
+      end
+      if recipe.key?("steps_preview") || recipe.key?(:steps_preview)
+        normalized[:steps_preview] =
+          Array(recipe["steps_preview"] || recipe[:steps_preview]).map(&:to_s).map(&:strip).reject(&:blank?)
+      end
+
+      normalized
     end
 
     def normalize_ingredients(ingredients)

@@ -39,7 +39,7 @@ export default class extends Controller {
     this.autostartAttempted = false
     this.functionArgDeltas = new Map()
     this.handledCallIds = new Set()
-    this.voicePhase = "idle"
+    this.voiceState = { session: "idle", phase: "idle", message: "" }
     this.uiState = {
       summary: null,
       recipe: null,
@@ -93,9 +93,49 @@ export default class extends Controller {
     }
   }
 
+  setVoiceState(next) {
+    const current = this.voiceState || { session: "idle", phase: "idle", message: "" }
+    this.voiceState = {
+      session: next?.session || current.session,
+      phase: next?.phase || current.phase,
+      message: typeof next?.message === "string" ? next.message : current.message
+    }
+    this.renderVoiceState()
+  }
+
+  voiceStateStatusText() {
+    const s = this.voiceState?.session
+    const p = this.voiceState?.phase
+    const m = this.voiceState?.message
+
+    if (typeof m === "string" && m.trim().length > 0) return m.trim()
+    if (s === "connecting") return "Connecting…"
+    if (s === "error") return "Error."
+    if (s === "idle") return ""
+    if (p === "thinking") return "Thinking…"
+    if (p === "listening") return "Listening…"
+    return ""
+  }
+
+  renderVoiceState() {
+    const s = this.voiceState?.session || "idle"
+    const p = this.voiceState?.phase || "idle"
+
+    const active = s === "live"
+    const phaseForFab = s === "connecting" ? "connecting" : s === "error" ? "error" : active ? p : "idle"
+    const label = active ? "End voice" : s === "connecting" ? "Starting…" : "Talk to Shakr"
+    const stateText = phaseForFab === "connecting" ? "Connecting" : phaseForFab === "thinking" ? "Thinking" : phaseForFab === "listening" ? "Listening" : phaseForFab === "error" ? "Error" : ""
+    const busy = s === "connecting" || (active && p === "thinking")
+
+    this.setFabState({ phase: phaseForFab, active, label, stateText, busy })
+
+    if (this.hasStatusTarget) {
+      this.statusTarget.textContent = this.voiceStateStatusText()
+    }
+  }
+
   setFabState({ phase, active, label, stateText, busy }) {
     const nextPhase = phase || "idle"
-    this.voicePhase = nextPhase
 
     if (this.hasButtonTarget) {
       this.buttonTarget.dataset.voiceState = nextPhase
@@ -120,45 +160,24 @@ export default class extends Controller {
     this.active = false
     if (this.hasButtonTarget) {
       this.buttonTarget.disabled = false
-      this.setFabState({
-        phase: "idle",
-        active: false,
-        label: "Talk to Shakr",
-        stateText: "",
-        busy: false
-      })
+      this.setVoiceState({ session: "idle", phase: "idle", message: "" })
     }
-    if (this.hasStatusTarget) this.statusTarget.textContent = ""
   }
 
   setUiLive() {
     this.active = true
     if (this.hasButtonTarget) {
       this.buttonTarget.disabled = false
-      this.setFabState({
-        phase: "listening",
-        active: true,
-        label: "End voice",
-        stateText: "Listening",
-        busy: false
-      })
+      this.setVoiceState({ session: "live", phase: "listening", message: "" })
     }
-    if (this.hasStatusTarget) this.statusTarget.textContent = "Listening..."
   }
 
   setUiError(message) {
     this.active = false
     if (this.hasButtonTarget) {
       this.buttonTarget.disabled = false
-      this.setFabState({
-        phase: "error",
-        active: false,
-        label: "Talk to Shakr",
-        stateText: "Error",
-        busy: false
-      })
+      this.setVoiceState({ session: "error", phase: "error", message: message?.toString?.() || "Error." })
     }
-    if (this.hasStatusTarget) this.statusTarget.textContent = message
   }
 
   csrfToken() {
@@ -235,13 +254,13 @@ export default class extends Controller {
           name: result.recipe.name,
           description: result.recipe.description,
           badge: "Draft",
-          ingredients: Array(result.recipe.ingredients).map((ing) => {
+          ingredients: (Array.isArray(result.recipe.ingredients) ? result.recipe.ingredients : []).map((ing) => {
             const qty = ing?.quantity ? `${ing.quantity}` : ""
             const unit = ing?.unit ? `${ing.unit}` : ""
             const ingName = ing?.name ? `${ing.name}` : ""
             return [qty, unit, ingName].filter(Boolean).join(" ").trim()
           }).filter(Boolean),
-          steps_preview: Array(result.recipe.steps).map((step) => step.toString())
+          steps_preview: (Array.isArray(result.recipe.steps) ? result.recipe.steps : []).map((step) => step.toString()).filter(Boolean)
         }
       })
     }
@@ -276,7 +295,15 @@ export default class extends Controller {
   applyUiStateUpdate(payload) {
     if (typeof payload.summary === "string") this.uiState.summary = payload.summary
     if (Array.isArray(payload.actions)) this.uiState.actions = payload.actions
-    if (Object.prototype.hasOwnProperty.call(payload, "recipe")) this.uiState.recipe = payload.recipe
+    if (Object.prototype.hasOwnProperty.call(payload, "recipe")) {
+      const nextRecipe = payload.recipe
+      if (nextRecipe && typeof nextRecipe === "object" && this.uiState.recipe && typeof this.uiState.recipe === "object") {
+        // Merge to avoid wiping fields like steps_preview when the assistant sends a partial recipe payload.
+        this.uiState.recipe = { ...this.uiState.recipe, ...nextRecipe }
+      } else {
+        this.uiState.recipe = nextRecipe
+      }
+    }
     if (typeof payload.display === "string") this.uiState.display = payload.display
     if (typeof payload.recipe_mode === "string") this.uiState.recipe_mode = payload.recipe_mode
     if (typeof payload.current_step_index === "number") this.uiState.current_step_index = payload.current_step_index
@@ -383,7 +410,6 @@ export default class extends Controller {
   }
 
   goToRecipeSlide(index) {
-    if (!this.recipeSliderRefs) return
     this.currentRecipeSlideIndex = Math.max(0, Math.min(1, index))
     this.updateRecipeSliderUi()
   }
@@ -453,27 +479,13 @@ export default class extends Controller {
     if (!ok) return
     this.sendRealtimeEvent({ type: "response.create" })
     if (this.active) {
-      this.setFabState({
-        phase: "thinking",
-        active: true,
-        label: "End voice",
-        stateText: "Thinking",
-        busy: true
-      })
+      this.setVoiceState({ session: "live", phase: "thinking", message: "" })
     }
-    if (this.hasStatusTarget) this.statusTarget.textContent = "Thinking..."
   }
 
   async startSession() {
     if (this.hasButtonTarget) this.buttonTarget.disabled = true
-    this.setFabState({
-      phase: "connecting",
-      active: false,
-      label: "Starting…",
-      stateText: "Connecting",
-      busy: true
-    })
-    if (this.hasStatusTarget) this.statusTarget.textContent = "Connecting…"
+    this.setVoiceState({ session: "connecting", phase: "connecting", message: "" })
 
     let ephemeralKey
     let realtimeCallsUrl
@@ -533,29 +545,15 @@ export default class extends Controller {
         const event = JSON.parse(e.data)
         if (event.type === "response.created") {
           if (this.active) {
-            this.setFabState({
-              phase: "thinking",
-              active: true,
-              label: "End voice",
-              stateText: "Thinking",
-              busy: true
-            })
+            this.setVoiceState({ session: "live", phase: "thinking", message: "" })
           }
-          if (this.hasStatusTarget) this.statusTarget.textContent = "Thinking..."
           return
         }
 
         if (event.type === "response.completed") {
           if (this.active) {
-            this.setFabState({
-              phase: "listening",
-              active: true,
-              label: "End voice",
-              stateText: "Listening",
-              busy: false
-            })
+            this.setVoiceState({ session: "live", phase: "listening", message: "" })
           }
-          if (this.hasStatusTarget) this.statusTarget.textContent = "Listening..."
           return
         }
 

@@ -56,12 +56,12 @@ module Openai
 
       ### Mode: How-to (only when asked)
       On entering How-to:
-      - Speak the full ingredients list with quantities once.
-      - Say: "Say go when you're ready for step 1."
+      - Start the recipe with step 1.
+      - Say: "Tell me when you're ready for step 2."
 
       Step-by-step rules:
       - Maintain an internal step index.
-      - On "go/next": speak exactly ONE step, then end with: "Say go for the next step."
+      - On "go/next": speak exactly ONE step, then end with: "Tell me when you're ready for the next step."
       - Occasionally orient with "Step X of Y".
       - Commands:
         - repeat → repeat current step

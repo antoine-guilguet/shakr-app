@@ -70,7 +70,7 @@ class RecipeGenerator
     started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     response = client.chat(
       parameters: {
-        model: DEFAULT_MODEL,
+        model: "gpt-5.1",
         response_format: { type: "json_object" },
         messages: [
           { role: "system", content: SYSTEM_PROMPT },

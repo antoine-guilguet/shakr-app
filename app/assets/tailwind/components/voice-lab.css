@@ -205,29 +205,24 @@
   }
 
   .voice-recipe-card__steps--fancy li {
-    position: relative;
     margin: 0.55rem 0;
-    padding-left: 2.1rem;
     font-size: 0.74rem;
     line-height: 1.5;
     color: var(--shakr-cream);
     counter-increment: voice-step;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
   }
 
   .voice-recipe-card__steps--fancy li.is-active-step {
     background: rgba(201, 136, 58, 0.10);
     border-radius: 0.5rem;
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
-    margin-left: -0.35rem;
-    padding-left: 2.45rem;
+    padding: 0.25rem 0.35rem;
   }
 
   .voice-recipe-card__steps--fancy li::before {
     content: counter(voice-step, decimal-leading-zero);
-    position: absolute;
-    left: 0;
-    top: 0.05rem;
     width: 1.6rem;
     height: 1.6rem;
     display: flex;
@@ -240,6 +235,8 @@
     background: rgba(201, 136, 58, 0.18);
     border: 1px solid rgba(201, 136, 58, 0.35);
     border-radius: 0.45rem;
+    flex: 0 0 auto;
+    margin-top: 0.05rem;
   }
 
   .voice-recipe-card__title {
@@ -290,6 +287,11 @@
     margin: 0.35rem 0 0;
     padding-left: 1.1rem;
     color: var(--shakr-cream);
+  }
+
+  /* Ensure steps slide isn't indented by the generic list rule above. */
+  .voice-recipe-card__list.voice-recipe-card__steps--fancy {
+    padding-left: 0;
   }
 
   .voice-recipe-card__list li {

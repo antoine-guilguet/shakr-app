@@ -47,4 +47,22 @@ class UiStateUpdateToolTest < ActionDispatch::IntegrationTest
     body = response.parsed_body
     assert_match(/at least one of/i, body["error"].to_s)
   end
+
+  test "ui_state_update does not wipe arrays when recipe payload is partial" do
+    post agent_tool_path(name: "ui_state_update"),
+      params: {
+        recipe: {
+          name: "Partial Recipe",
+          description: "No arrays provided"
+        }
+      },
+      as: :json
+
+    assert_response :success
+    body = response.parsed_body
+    assert_equal true, body["ok"]
+    assert_equal "Partial Recipe", body.dig("recipe", "name")
+    assert_nil body.dig("recipe", "ingredients")
+    assert_nil body.dig("recipe", "steps_preview")
+  end
 end

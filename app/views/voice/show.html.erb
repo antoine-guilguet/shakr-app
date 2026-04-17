@@ -7,7 +7,7 @@
   >
     <div class="voice-ui">
       <section class="voice-ui-section" data-realtime-voice-target="summarySection">
-        <h2 class="voice-ui-section__title">Summary</h2>
+        <h2 class="voice-ui-section__title">What Shakr understood</h2>
         <p class="voice-ui-summary" data-realtime-voice-target="summary" aria-live="polite"></p>
       </section>
 
@@ -76,13 +76,13 @@
       </section>
 
       <section class="voice-ui-section" data-realtime-voice-target="actionsSection">
-        <h2 class="voice-ui-section__title">Actions</h2>
+        <h2 class="voice-ui-section__title">Suggested actions</h2>
         <div class="voice-ui-actions" data-realtime-voice-target="actions"></div>
       </section>
     </div>
 
     <%= render "shared/voice_agent_fab", mode: :button %>
 
-    <p class="voice-lab-status" data-realtime-voice-target="status" role="status" aria-live="polite"></p>
+    <p class="voice-lab-status sr-only" data-realtime-voice-target="status" role="status" aria-live="polite"></p>
   </section>
 </div>

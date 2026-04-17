@@ -51,27 +51,31 @@ module Recipes
     private
 
     def rank_order_sql(combined_sql)
-      conn = Recipe.connection
-      q = conn.quote(@query)
-      Arel.sql(<<~SQL.squish)
-        ts_rank_cd(
-          #{combined_sql},
-          plainto_tsquery('#{FTS_CONFIG}', #{q})
-        ) DESC,
-        recipes.updated_at DESC
-      SQL
+      # Use sanitize_sql_array so Brakeman can see the user input is quoted.
+      sql = Recipe.sanitize_sql_array(
+        [
+          "ts_rank_cd(#{combined_sql}, plainto_tsquery(?, ?)) DESC, recipes.updated_at DESC",
+          FTS_CONFIG,
+          @query
+        ]
+      )
+      Arel.sql(sql)
     end
 
     def trigram_fallback
-      conn = Recipe.connection
-      q = conn.quote(@query)
-
       scoped = Recipe.where(id: @relation.unscope(:order).select(:id))
+
+      where_sql = Recipe.sanitize_sql_array(
+        ["similarity(lower(recipes.name::text), lower(?)) > ?", @query, SIMILARITY_THRESHOLD]
+      )
+      order_sql = Recipe.sanitize_sql_array(
+        ["similarity(lower(recipes.name::text), lower(?)) DESC, recipes.updated_at DESC", @query]
+      )
 
       scoped
         .joins(INGREDIENT_JOIN_SQL)
-        .where("similarity(lower(recipes.name::text), lower(#{q})) > ?", SIMILARITY_THRESHOLD)
-        .order(Arel.sql("similarity(lower(recipes.name::text), lower(#{q})) DESC, recipes.updated_at DESC"))
+        .where(where_sql)
+        .order(Arel.sql(order_sql))
         .first
     end
   end
